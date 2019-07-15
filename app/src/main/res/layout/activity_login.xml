@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/scrollview"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:isScrollContainer="true">
+
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".LoginActivity"
+        android:background="#FFFFFF"
+        android:id="@+id/mainrel"
+        android:clickable="true"
+        >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/topText"
+            android:orientation="vertical"
+            android:background="@drawable/grad_login">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:fontFamily="@font/avnxt_bold"
+                android:text="GUESTY"
+                android:layout_marginTop="40dp"
+                android:textColor="#FFFFFF"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:fontFamily="@font/avnxt_regular"
+                android:text="※ Atithi Devo Bhava ※"
+                android:textColor="#FFFFFF"
+                android:gravity="center"/>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avnxt_bold"
+                android:gravity="center"
+                android:text="LOGIN"
+                android:layout_marginTop="60dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="#FFFFFF"
+
+                android:textSize="14dp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/topText"
+            android:id="@+id/inputs"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal"
+                android:id="@+id/unamerel">
+
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingVertical="10dp"
+                    android:maxLength="25"
+                    android:lines="1"
+                    android:inputType="textEmailAddress"
+                    android:background="@drawable/edittext_borders"
+                    android:id="@+id/username"
+                    android:layout_marginHorizontal="30dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/avnxt_medium"
+                    android:gravity="center"
+                    android:background="#FFFFFF"
+                    android:layout_marginTop="3dp"
+                    android:paddingVertical="10dp"
+                    android:layout_alignParentRight="true"
+                    android:text="Username"
+                    android:layout_marginHorizontal="40dp"
+                    android:layout_gravity="center"
+                    android:textColor="@color/gDark"
+                    android:textSize="12dp" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal"
+                android:id="@+id/passrel">
+
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingVertical="10dp"
+                    android:maxLength="14"
+                    android:background="@drawable/edittext_borders"
+                    android:id="@+id/password"
+                    android:inputType="textPassword"
+                    android:layout_marginHorizontal="30dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/avnxt_medium"
+                    android:gravity="center"
+                    android:background="#FFFFFF"
+                    android:layout_marginTop="3dp"
+                    android:paddingVertical="10dp"
+                    android:layout_alignParentRight="true"
+                    android:text="Password"
+                    android:layout_marginHorizontal="40dp"
+                    android:layout_gravity="center"
+                    android:textColor="@color/gDark"
+                    android:textSize="12dp" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/incorrect_red"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="200dp"
+                android:fontFamily="@font/avnxt_medium"
+                android:gravity="center"
+                android:id="@+id/invalid_text"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="17sp"
+                android:layout_alignParentBottom="true"
+                android:fontFamily="@font/avnxt_demi"
+                android:text="LOGIN"
+                android:id="@+id/login"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/btn_grad_borders"
+                android:layout_marginHorizontal="40dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avnxt_medium"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:layout_alignParentBottom="true"
+                android:text="Forgot Password ?"
+                android:layout_gravity="center"
+                android:textColor="@color/gDark"
+                android:textSize="18dp" />
+
+
+
+        </LinearLayout>
+
+
+
+
+        <ProgressBar
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:id="@+id/progressBar"
+            android:indeterminateTint="@color/gDark"/>
+
+    </RelativeLayout>
+</ScrollView>

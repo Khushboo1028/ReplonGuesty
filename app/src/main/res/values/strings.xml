@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">ReplonGuesty</string>
+
+    <!--firebase strings, DO NOT CHANGE-->
+
+    <!--collection guestData and it's fields-->
+    <string name="guestlist">guestlist</string>
+
+    <string name="user">users</string>
+    <string name="date_created">date_created</string>
+    <string name="name">name</string>
+    <string name="phone_number">phone_number</string>
+    <string name="purpose">purpose</string>
+    <string name="flat_no">flat_no</string>
+    <string name="user_id">user_id</string>
+    <string name="document_id">document_id</string>
+    <string name="vehicle_number">vehicle_number</string>
+    <string name="car_type">car_type</string>
+    <string name="vehicle_image_url">vehicle_image_url</string>
+    <string name="profile_image_url">profile_image_url</string>
+
+</resources>

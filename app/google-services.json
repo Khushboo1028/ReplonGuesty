@@ -1,0 +1,195 @@
+{
+  "project_info": {
+    "project_number": "610914268952",
+    "firebase_url": "https://replontest.firebaseio.com",
+    "project_id": "replontest",
+    "storage_bucket": "replontest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:610914268952:android:a42d0102b5c6a1e2",
+        "android_client_info": {
+          "package_name": "com.hello.khushboo.replonguesty"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "610914268952-9306sfrkd4l6rdfb97oqsn10a6f6ic72.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hello.khushboo.replonguesty",
+            "certificate_hash": "02818f647ce90b5f77f7e1cf97515f85a3acae57"
+          }
+        },
+        {
+          "client_id": "610914268952-cgk6v2008kjssn1e7rn2qrfmga92pt0d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBc1CncJgWz6Tb3HDZoWd7-448f0677BDQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "610914268952-cgk6v2008kjssn1e7rn2qrfmga92pt0d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "610914268952-akcfcooul24rab8smqk4bm1ruveicbof.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.chauhanswapnil.SuperUser"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:610914268952:android:a5b4da62ecf0f0b4",
+        "android_client_info": {
+          "package_name": "com.hello.khushboo.replonregistration"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "610914268952-has56pf2q76nupntfumuca64rvi3aehn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hello.khushboo.replonregistration",
+            "certificate_hash": "02818f647ce90b5f77f7e1cf97515f85a3acae57"
+          }
+        },
+        {
+          "client_id": "610914268952-cgk6v2008kjssn1e7rn2qrfmga92pt0d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBc1CncJgWz6Tb3HDZoWd7-448f0677BDQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "610914268952-cgk6v2008kjssn1e7rn2qrfmga92pt0d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "610914268952-akcfcooul24rab8smqk4bm1ruveicbof.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.chauhanswapnil.SuperUser"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:610914268952:android:11254b0cbdce5c6c",
+        "android_client_info": {
+          "package_name": "com.replon.www.gaurdmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "610914268952-fehmo3bg4g66ja56ef5n04cl1osc68r1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.replon.www.gaurdmanager",
+            "certificate_hash": "02818f647ce90b5f77f7e1cf97515f85a3acae57"
+          }
+        },
+        {
+          "client_id": "610914268952-f27refg55cd3oibe4hapf4pq6d1kup89.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.replon.www.gaurdmanager",
+            "certificate_hash": "7de884e06f58f4f461d449e3eb69be78ae354e9f"
+          }
+        },
+        {
+          "client_id": "610914268952-cgk6v2008kjssn1e7rn2qrfmga92pt0d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBc1CncJgWz6Tb3HDZoWd7-448f0677BDQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "610914268952-cgk6v2008kjssn1e7rn2qrfmga92pt0d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "610914268952-akcfcooul24rab8smqk4bm1ruveicbof.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.chauhanswapnil.SuperUser"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:610914268952:android:5c366bc605e30327",
+        "android_client_info": {
+          "package_name": "com.replon.www.replonhomy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "610914268952-bsp8a2q2mqk7mfhlt0gtr30dl7i65ujm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.replon.www.replonhomy",
+            "certificate_hash": "02818f647ce90b5f77f7e1cf97515f85a3acae57"
+          }
+        },
+        {
+          "client_id": "610914268952-cgk6v2008kjssn1e7rn2qrfmga92pt0d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBc1CncJgWz6Tb3HDZoWd7-448f0677BDQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "610914268952-cgk6v2008kjssn1e7rn2qrfmga92pt0d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "610914268952-akcfcooul24rab8smqk4bm1ruveicbof.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.chauhanswapnil.SuperUser"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

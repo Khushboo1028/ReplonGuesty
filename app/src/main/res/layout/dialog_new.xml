@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:paddingHorizontal="10dp"
+        android:paddingTop="10dp"
+        android:id="@+id/dialog_upper"
+        android:background="@drawable/dialog_upper_curve">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_error_dialog"
+            android:id="@+id/dialog_img"
+            android:layout_marginVertical="20dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/dialog_img"
+            android:textSize="20sp"
+            android:fontFamily="@font/avnxt_bold"
+            android:text="Error"
+            android:id="@+id/dialog_title"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="16dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_upper"
+        android:layout_marginTop="-10dp"
+        android:id="@+id/dialog_lower"
+        android:layout_marginHorizontal="20dp"
+        android:paddingHorizontal="10dp"
+        android:paddingBottom="10dp"
+        android:background="@drawable/dialog_lower_curve">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginHorizontal="40dp"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:text="You are not able to generate a complaint. Please go to settings for more information."
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/avnxt_demi"
+            android:textColor="#707070"
+            android:id="@+id/dialog_message"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/dialog_message"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            >
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_grad_borders"
+                android:id="@+id/btn_negative"
+                android:text="Don't Cancel"
+                android:layout_marginHorizontal="10dp"
+                android:textColor="#FFFFFF"
+                android:layout_weight="1"
+                />
+
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_grad_borders"
+                android:id="@+id/btn_positive"
+                android:text="Yes, Cancel"
+                android:textColor="#FFFFFF"
+                android:layout_marginHorizontal="10dp"
+                android:layout_weight="1"
+                />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>
