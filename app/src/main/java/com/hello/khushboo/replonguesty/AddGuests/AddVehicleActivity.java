@@ -1,15 +1,22 @@
 package com.hello.khushboo.replonguesty.AddGuests;
 
+import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.app.ProgressDialog;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
@@ -51,6 +59,7 @@ import java.util.UUID;
 public class AddVehicleActivity extends AppCompatActivity {
 
     public static final String TAG = "AddVehicleActivity";
+    public static final int MY_PERMISSIONS_REQUEST_CAMERA = 56;
 
     ImageView back_add_veh;
     Button add_vehicle;
@@ -232,8 +241,67 @@ public class AddVehicleActivity extends AppCompatActivity {
 //                }
 //                else
                 if (items[item].equals(finalTakephoto)) {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(intent, REQUEST_CAMERA);
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(AddVehicleActivity.this,
+                                Manifest.permission.CAMERA) == true){
+
+
+                            final Dialog dialog1 = new Dialog(AddVehicleActivity.this);
+                            dialog1.setContentView(R.layout.dialog_new);
+                            dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            Log.i(TAG,"NEW DIALOG");
+
+                            Button btn_positive = dialog1.findViewById(R.id.btn_positive);
+                            Button btn_negative = dialog1.findViewById(R.id.btn_negative);
+                            TextView dialog_title = dialog1.findViewById(R.id.dialog_title);
+                            TextView dialog_message = dialog1.findViewById(R.id.dialog_message);
+                            ImageView dialog_icon = dialog1.findViewById(R.id.dialog_img);
+
+                            dialog_title.setText("Permission Denied");
+                            dialog_message.setText("You might have denied the permission for using the Camera App. Please go to phone settings and enable the permission for Home.");
+                            //        btn_negative.setVisibility(View.GONE);
+                            //        btn_positive.setVisibility(View.GONE);
+
+                            btn_positive.setText("OK");
+                            btn_negative.setText("Go to Settings");
+                            btn_positive.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog1.dismiss();
+                                }
+                            });
+                            btn_negative.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+//                                    Intent myIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//                                    startActivity(myIntent);
+
+                                    Intent i = new Intent();
+                                    i.setAction(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    i.addCategory(Intent.CATEGORY_DEFAULT);
+                                    i.setData(Uri.parse("package:" + getPackageName()));
+                                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                    i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                                    startActivity(i);
+                                }
+                            });
+                            dialog_icon.setImageResource(R.drawable.ic_error_dialog);
+                            dialog1.show();
+
+                        }else {
+                            ActivityCompat.requestPermissions(AddVehicleActivity.this, new String[]{Manifest.permission.CAMERA},
+                                    MY_PERMISSIONS_REQUEST_CAMERA);
+                        }
+
+
+                    }else{
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(intent, REQUEST_CAMERA);
+                    }
+
                 }
             }
         });
@@ -246,31 +314,39 @@ public class AddVehicleActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        MY_PERMISSIONS_REQUEST_CAMERA);
 
 
-            bitmap_photo=(Bitmap)data.getExtras().get("data");
-            vehicle_image.setImageBitmap(bitmap_photo);
-            selectedImageURI=bitmapToUriConverter(bitmap_photo);
-           // uploadImage();
-
-        }
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK  && data != null && data.getData() != null) {
-            selectedImageURI = data.getData();
-
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageURI);
-                // bitmap_photo = Bitmap.createScaledBitmap(bitmap,50,67,false);
-                vehicle_image.setImageBitmap(bitmap);
-
-                Log.i(TAG,"Image set");
-                //uploadImage();
-
-            } catch (IOException e) {
-                e.printStackTrace();
+            }else{
+                bitmap_photo=(Bitmap)data.getExtras().get("data");
+                vehicle_image.setImageBitmap(bitmap_photo);
+                selectedImageURI=bitmapToUriConverter(bitmap_photo);
+                // uploadImage();
             }
 
 
+
         }
+//        if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK  && data != null && data.getData() != null) {
+//            selectedImageURI = data.getData();
+//
+//            try {
+//                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageURI);
+//                // bitmap_photo = Bitmap.createScaledBitmap(bitmap,50,67,false);
+//                vehicle_image.setImageBitmap(bitmap);
+//
+//                Log.i(TAG,"Image set");
+//                //uploadImage();
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//
+//        }
     }
 
     //to convert bitmap to image uri

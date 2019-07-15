@@ -1,10 +1,12 @@
 package com.hello.khushboo.replonguesty.AddGuests;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -13,6 +15,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -72,6 +76,7 @@ import static java.lang.Boolean.TRUE;
 public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.OnMultipleItemsSelectedListener {
 
     public static final String TAG = "AddGuestActivity";
+    public static final int MY_PERMISSIONS_REQUEST_CAMERA = 78;
     ImageView back_add_guest;
     Button btn_add_vehicle, btn_add_guest, btn_get_otp;
     MultiSpinner multiSpinner;
@@ -422,8 +427,67 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
 //                }
 //                else
                 if (items[item].equals(finalTakephoto)) {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(intent, REQUEST_CAMERA);
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(AddGuestActivity.this,
+                                Manifest.permission.CAMERA) == true){
+
+
+                            final Dialog dialog1 = new Dialog(AddGuestActivity.this);
+                            dialog1.setContentView(R.layout.dialog_new);
+                            dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            Log.i(TAG,"NEW DIALOG");
+
+                            Button btn_positive = dialog1.findViewById(R.id.btn_positive);
+                            Button btn_negative = dialog1.findViewById(R.id.btn_negative);
+                            TextView dialog_title = dialog1.findViewById(R.id.dialog_title);
+                            TextView dialog_message = dialog1.findViewById(R.id.dialog_message);
+                            ImageView dialog_icon = dialog1.findViewById(R.id.dialog_img);
+
+                            dialog_title.setText("Permission Denied");
+                            dialog_message.setText("You might have denied the permission for using the Camera App. Please go to phone settings and enable the permission for Home.");
+                            //        btn_negative.setVisibility(View.GONE);
+                            //        btn_positive.setVisibility(View.GONE);
+
+                            btn_positive.setText("OK");
+                            btn_negative.setText("Go to Settings");
+                            btn_positive.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog1.dismiss();
+                                }
+                            });
+                            btn_negative.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+//                                    Intent myIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//                                    startActivity(myIntent);
+
+                                    Intent i = new Intent();
+                                    i.setAction(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    i.addCategory(Intent.CATEGORY_DEFAULT);
+                                    i.setData(Uri.parse("package:" + getPackageName()));
+                                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                    i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                                    startActivity(i);
+                                }
+                            });
+                            dialog_icon.setImageResource(R.drawable.ic_error_dialog);
+                            dialog1.show();
+
+                        }else {
+                            ActivityCompat.requestPermissions(AddGuestActivity.this, new String[]{Manifest.permission.CAMERA},
+                                    MY_PERMISSIONS_REQUEST_CAMERA);
+                        }
+
+
+                    }else{
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(intent, REQUEST_CAMERA);
+                    }
+
                 }
             }
         });
@@ -437,10 +501,19 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK) {
 
-            bitmap_photo=(Bitmap)data.getExtras().get("data");
-            guest_image.setImageBitmap(bitmap_photo);
-            selectedImageURIProfile=bitmapToUriConverter(bitmap_photo);
-            // uploadImage();
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        MY_PERMISSIONS_REQUEST_CAMERA);
+
+
+            }else{
+                bitmap_photo=(Bitmap)data.getExtras().get("data");
+                guest_image.setImageBitmap(bitmap_photo);
+                selectedImageURIProfile=bitmapToUriConverter(bitmap_photo);
+                // uploadImage();
+            }
+
 
         }
 
