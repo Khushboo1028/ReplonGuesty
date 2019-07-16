@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hello.khushboo.replonguesty.AddGuests.AddGuestActivity;
+import com.hello.khushboo.replonguesty.CheckoutGuests.GuestCheckoutActivity;
 
 public class
 MainActivity extends AppCompatActivity {
@@ -58,7 +59,7 @@ MainActivity extends AppCompatActivity {
         out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //startActivity(new Intent(getApplicationContext(), GuestCheckoutActivity.class));
+                startActivity(new Intent(getApplicationContext(), GuestCheckoutActivity.class));
             }
         });
 

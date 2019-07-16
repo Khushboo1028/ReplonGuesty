@@ -8,13 +8,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.app.ProgressDialog;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -30,31 +28,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
-import com.google.firebase.storage.UploadTask;
 import com.hello.khushboo.replonguesty.Image;
 import com.hello.khushboo.replonguesty.R;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
+
 
 public class AddVehicleActivity extends AppCompatActivity {
 
@@ -81,9 +65,6 @@ public class AddVehicleActivity extends AppCompatActivity {
 
     private static final int REQUEST_CAMERA = 100;
     private static final int RESULT_LOAD_IMAGE = 69;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,11 +121,8 @@ public class AddVehicleActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-
                 car_type= String.valueOf(spinner.getSelectedItem());
             }
-
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -191,36 +169,6 @@ public class AddVehicleActivity extends AppCompatActivity {
         });
     }
 
-//
-//    private void uploadImage(){
-//        final StorageReference ref = storageReference.child("guest_vehicle_images/"+ UUID.randomUUID().toString());
-//        uploadTask = ref.putFile(selectedImageURI);
-//
-//        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-//            @Override
-//            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-//                if (!task.isSuccessful()) {
-//                    throw task.getException();
-//                }
-//
-//                // Continue with the task to get the download URL
-//                return ref.getDownloadUrl();
-//            }
-//        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-//            @Override
-//            public void onComplete(@NonNull Task<Uri> task) {
-//                if (task.isSuccessful()) {
-//                    downloadUri = task.getResult();
-//                    vehicle_image_URL=downloadUri.toString();
-//                    Log.i(TAG,"The URL for this image is "+downloadUri);
-//                    Toast.makeText(getApplicationContext(),"Uploaded",Toast.LENGTH_SHORT).show();
-//                } else {
-//                    // Handle failures
-//                    // ...
-//                }
-//            }
-//        });
-//    }
 
     public void dialogShowPhoto() {
         String takePhoto = "Take Photo";
