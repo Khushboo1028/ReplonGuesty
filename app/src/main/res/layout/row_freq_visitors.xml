@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="?android:selectableItemBackground"
+    android:id="@+id/row">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="7dp"
+        android:id="@+id/view1"
+        android:background="#707070"/>
+
+    <LinearLayout
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:id="@+id/guest_list">
+
+        <TextView
+
+            android:id="@+id/guest_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name Here"
+            android:fontFamily="@font/avnxt_demi"
+            android:textSize="18sp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/gDark"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="15dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Purpose: "
+                android:textSize="15sp"
+                android:fontFamily="@font/avnxt_medium"
+                android:textColor="#000000"
+                />
+
+            <TextView
+                android:id="@+id/guest_purpose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Business"
+                android:textSize="15sp"
+                android:layout_marginStart="4dp"
+                android:fontFamily="@font/avnxt_regular"
+                android:textColor="#000000"
+                />
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="15dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phone Number: "
+                android:textSize="15sp"
+                android:fontFamily="@font/avnxt_medium"
+                android:textColor="#000000"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9874563210"
+                android:id="@+id/phone"
+                android:textSize="15sp"
+                android:fontFamily="@font/avnxt_regular"
+                android:layout_marginStart="10dp"
+                android:textColor="#000000"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="10dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vehicle Number: "
+                android:textSize="15sp"
+                android:fontFamily="@font/avnxt_medium"
+                android:textColor="#000000"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MH02EK1100"
+                android:id="@+id/veh_num"
+                android:textSize="15sp"
+                android:fontFamily="@font/avnxt_regular"
+                android:layout_marginStart="10dp"
+                android:textColor="#000000"
+                />
+
+        </LinearLayout>
+
+
+
+
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_checkin"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="10dp"
+        android:minHeight="30dp"
+        android:text="CHECK-IN"
+        android:fontFamily="@font/avnxt_regular"
+        android:textSize="12sp"
+        android:background="#FFFFFF"
+        android:textColor="#E55039"
+        android:paddingHorizontal="5dp"/>
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkedin_text"
+        android:layout_centerVertical="true"
+        android:textColor="#E55039"
+        android:layout_marginStart="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/guest_list"
+        android:layout_marginEnd="10dp"
+        android:textSize="16dp"
+        android:gravity="end"
+        android:text="Currenty Checked-in"
+        android:visibility="gone"
+        android:fontFamily="@font/avnxt_medium"/>
+
+</RelativeLayout>
