@@ -18,5 +18,9 @@
     <string name="car_type">car_type</string>
     <string name="vehicle_image_url">vehicle_image_url</string>
     <string name="profile_image_url">profile_image_url</string>
+    <string name="frequent_visitor">frequent_visitor</string>
+    <string name="document_ref">document_id</string>
+    <string name="checkout">checkout</string>
+    <string name="checkout_time">checkout_time</string>
 
 </resources>

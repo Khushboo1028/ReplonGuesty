@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:src="@drawable/back"
+        android:padding="3dp"
         android:layout_marginHorizontal="8dp"
         android:id="@+id/back_checkout"
         />
@@ -81,6 +82,23 @@
 
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No guests checked in! :)"
+        android:layout_centerInParent="true"
+        android:id="@+id/empty_list"
+        android:fontFamily="@font/avnxt_demi"
+        android:textColor="@color/incorrect_red"
+        android:visibility="gone"
+        android:textSize="18dp"/>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressbar"
+        android:layout_centerInParent="true"/>
 
 
     <android.support.v7.widget.RecyclerView

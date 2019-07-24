@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/filter_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/avnxt_demi"
+        android:text="ENTRY STATUS"
+        android:textColor="@color/gDark"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:textSize="14sp"
+        android:id="@+id/status_text"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/status_text"
+        android:layout_marginTop="10dp"
+        android:id="@+id/status_btns"
+        >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CHECKOUT"
+            android:background="#1A707070"
+            android:textColor="#38ada9"
+            android:id="@+id/btn_checkout"
+            android:layout_marginHorizontal="20dp"
+            android:layout_weight="3"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CHECK-IN"
+            android:background="#1A707070"
+            android:textColor="#E55039"
+            android:id="@+id/btn_checkin"
+            android:layout_marginHorizontal="20dp"
+            android:layout_weight="3"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ALL"
+            android:background="#1A707070"
+            android:textColor="#000000"
+            android:id="@+id/btn_all"
+            android:layout_marginHorizontal="20dp"
+            android:layout_weight="3"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/status_btns"
+        android:background="#70000000"
+        android:id="@+id/view1"
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="15dp"
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dates_text"
+        android:layout_below="@id/view1"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_date"
+            android:layout_marginStart="60dp"
+            android:layout_gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Date"
+            android:fontFamily="@font/avnxt_demi"
+            android:textSize="14dp"
+            android:id="@+id/start_date_select"
+            android:gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:layout_weight="2"
+            android:textColor="@color/gDark"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_date"
+            android:layout_marginStart="40dp"
+            android:layout_gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="End Date"
+            android:fontFamily="@font/avnxt_demi"
+            android:textSize="14dp"
+            android:gravity="center_vertical"
+            android:id="@+id/end_date_select"
+            android:layout_marginStart="10dp"
+            android:layout_weight="2"
+            android:textColor="@color/gDark"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/dates_text"
+        android:id="@+id/dates_select"
+        android:layout_marginVertical="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DD/MM/YY"
+            android:fontFamily="@font/avnxt_medium"
+            android:background="@drawable/date_border_filter"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:layout_marginHorizontal="40dp"
+            android:id="@+id/start_date"
+            android:layout_weight="2"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DD/MM/YY"
+            android:fontFamily="@font/avnxt_medium"
+            android:background="@drawable/date_border_filter"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:layout_marginHorizontal="40dp"
+            android:id="@+id/end_date"
+            android:layout_weight="2"/>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_grad_borders"
+        android:text="Apply Filters"
+        android:textColor="#FFFFFF"
+        android:id="@+id/apply_filters"
+        android:layout_below="@id/dates_select"
+        android:layout_marginBottom="10dp"
+        android:layout_marginHorizontal="40dp"
+        android:minHeight="35dp" />
+
+
+</RelativeLayout>

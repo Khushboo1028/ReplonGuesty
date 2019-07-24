@@ -109,7 +109,7 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
     CheckBox checkBox;
     Boolean bool_frequent_visitor;
     String selectedImageUriString;
-    Uri selectedImageURI,downloadUri,selectedImageURIProfile;
+    Uri selectedImageURI,downloadUri,downloadUri2,selectedImageURIProfile;
     StorageTask uploadTask,uploadTask2;
 
     StorageReference storageReference;
@@ -668,11 +668,11 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
         final String date_created = getString(R.string.date_created);
         final String guest_user_id = getString(R.string.user_id);
         final String document_id = getString(R.string.document_id);
-        final String document_ref="document_ref";
+        final String document_ref=getString(R.string.document_ref);
         final String vehicle_number_fb = getString(R.string.vehicle_number);
         final String car_type_fb = getString(R.string.car_type);
         final String vehicle_image_url = getString(R.string.vehicle_image_url);
-        final String frequent_visitor = "frequent_visitor";
+        final String frequent_visitor = getString(R.string.frequent_visitor);
         final String user_id = currentFirebaseUser.getUid();
 
 
@@ -757,7 +757,7 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
                     data.put("checkout", FALSE);
                     data.put("checkout_time", null);
                     data.put(frequent_visitor,bool_frequent_visitor);
-                    data.put("profile_image_URL",profile_image_URL);
+                    data.put("profile_image_url",profile_image_URL);
 
 
 
@@ -785,6 +785,7 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
                                     selectedImageURI=null;
                                     vehicle_image_URL ="";
                                     profile_image_URL="";
+                                    checkBox.setChecked(FALSE);
                                     guest_image.setImageResource(R.drawable.ic_default_guest);
                                     btn_add_vehicle.setVisibility(View.VISIBLE);
                                     multiSpinner.setSelection(new int[]{});
@@ -862,7 +863,7 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
         spinner.setEnabled(false);
         checkBox.setEnabled(false);
         mProgressBar.setVisibility(View.VISIBLE);
-        final StorageReference ref = storageReference.child("guest_images/"+ UUID.randomUUID().toString());
+        final StorageReference ref = storageReference.child("guest_profile_images/"+ UUID.randomUUID().toString());
         uploadTask = ref.putFile(selectedImageURIProfile);
 
         uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -910,7 +911,7 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
         uploadTask = ref.putFile(selectedImageURI);
 
 
-        final StorageReference ref2 = storageReference.child("guest_images/"+ UUID.randomUUID().toString());
+        final StorageReference ref2 = storageReference.child("guest_profile_images/"+ UUID.randomUUID().toString());
         uploadTask2 = ref2.putFile(selectedImageURIProfile);
 
         uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -940,15 +941,15 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
                             }
 
                             // Continue with the task to get the download URL
-                            return ref.getDownloadUrl();
+                            return ref2.getDownloadUrl();
                         }
                     }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                         @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()) {
-                                downloadUri = task.getResult();
-                                profile_image_URL =downloadUri.toString();
-                                Log.i(TAG,"The URL for this image is "+downloadUri);
+                        public void onComplete(@NonNull Task<Uri> task2) {
+                            if (task2.isSuccessful()) {
+                                downloadUri2 = task2.getResult();
+                                profile_image_URL =downloadUri2.toString();
+                                Log.i(TAG,"The Profile URL for this image is "+downloadUri2);
                                 // Toast.makeText(getApplicationContext(),"Image Uploaded",Toast.LENGTH_SHORT).show();
 
                                 addData();
@@ -957,7 +958,7 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
                             } else {
                                 // Handle failures
                                 // ...
-                                Log.i(TAG,"error is "+task.getException());
+                                Log.i(TAG,"error is "+task2.getException());
                             }
                         }
                     });

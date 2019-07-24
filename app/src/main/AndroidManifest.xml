@@ -16,7 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CheckoutGuests.GuestCheckoutActivity"></activity>
+        <activity android:name=".CheckoutGuests.GuestCheckoutViewActivity"></activity>
+        <activity android:name=".FrequentVisitors.FrequentVisitorsActivity" />
+        <activity android:name=".CheckoutGuests.GuestCheckoutActivity" />
         <activity android:name=".AddGuests.AddVehicleActivity" />
         <activity android:name=".AddGuests.AddGuestActivity" />
         <activity android:name=".LoginActivity" />
