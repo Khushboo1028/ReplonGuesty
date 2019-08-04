@@ -13,6 +13,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -56,9 +58,11 @@ import com.google.firebase.storage.UploadTask;
 import com.hello.khushboo.replonguesty.MultiSpinner;
 import com.hello.khushboo.replonguesty.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -69,16 +73,18 @@ import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.hello.khushboo.replonguesty.AddGuests.AddVehicleActivity.calculateInSampleSize;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.OnMultipleItemsSelectedListener {
 
     public static final String TAG = "AddGuestActivity";
+    public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 78;
+    public static final int MY_PERMISSIONS_REQUEST_EXTERNAL_STORAGE = 43;
     ImageView back_add_guest;
     Button btn_add_vehicle, btn_add_guest, btn_get_otp;
+
     MultiSpinner multiSpinner;
     Spinner spinner;
 
@@ -109,7 +115,7 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
     CheckBox checkBox;
     Boolean bool_frequent_visitor;
     String selectedImageUriString;
-    Uri selectedImageURI,downloadUri,downloadUri2,selectedImageURIProfile;
+    Uri selectedImageURI,downloadUri,downloadUri2,selectedImageURIProfile,file_camera_uri;
     StorageTask uploadTask,uploadTask2;
 
     StorageReference storageReference;
@@ -119,6 +125,7 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
     Bitmap bitmap_photo;
     String profile_image_URL;
 
+    Boolean FLAG1,FLAG2,FLAG3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,6 +182,10 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
 //        verify_otp.setVisibility(View.GONE);
         mAuth = FirebaseAuth.getInstance();
 
+
+        //for camera intent
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
 
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -427,6 +438,20 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
 //                }
 //                else
                 if (items[item].equals(finalTakephoto)) {
+
+                    int PERMISSION_ALL = 1;
+                    String[] PERMISSIONS = {
+                            android.Manifest.permission.READ_CONTACTS,
+                            android.Manifest.permission.WRITE_CONTACTS,
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            android.Manifest.permission.READ_SMS,
+                            android.Manifest.permission.CAMERA
+                    };
+
+                    if(!hasPermissions(getApplicationContext(), PERMISSIONS)){
+                        ActivityCompat.requestPermissions(AddGuestActivity.this, PERMISSIONS, PERMISSION_ALL);
+                    }
+
                     if (ContextCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
 
 
@@ -485,6 +510,9 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
 
                     }else{
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        file_camera_uri =  getOutputMediaFileUri(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, file_camera_uri);
                         startActivityForResult(intent, REQUEST_CAMERA);
                     }
 
@@ -495,24 +523,55 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
 
 
     }
+    private static Uri getOutputMediaFileUri(int type){
+        return Uri.fromFile(getOutputMediaFile(type));
+    }
+
+    private static File getOutputMediaFile(int type){
+
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "ReplonHome");
+
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                Log.d(TAG, "failed to create directory");
+                return null;
+            }
+        }
+
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        if (type == MEDIA_TYPE_IMAGE){
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "IMG_"+ timeStamp + ".jpg");
+        } else {
+            return null;
+        }
+
+        return mediaFile;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK) {
 
+
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.CAMERA},
                         MY_PERMISSIONS_REQUEST_CAMERA);
-
-
-            }else{
-                bitmap_photo=(Bitmap)data.getExtras().get("data");
-                guest_image.setImageBitmap(bitmap_photo);
-                selectedImageURIProfile=bitmapToUriConverter(bitmap_photo);
-                // uploadImage();
+                        FLAG1=TRUE;
             }
+
+            else{
+                guest_image.setImageURI(file_camera_uri);
+                selectedImageURIProfile=file_camera_uri;
+
+            }
+
+                // uploadImage();
+
 
 
         }
@@ -556,34 +615,7 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
 
 
 
-    public Uri bitmapToUriConverter(Bitmap mBitmap) {
-        Uri uri = null;
-        try {
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            // Calculate inSampleSize
-            options.inSampleSize = calculateInSampleSize(options, 100, 100);
 
-            // Decode bitmap with inSampleSize set
-            options.inJustDecodeBounds = false;
-            Bitmap newBitmap = Bitmap.createScaledBitmap(mBitmap, 200, 200,
-                    true);
-            File file = new File(getApplicationContext().getFilesDir(), "Image"
-                    + new Random().nextInt() + ".jpeg");
-            FileOutputStream out = getApplicationContext().openFileOutput(file.getName(),
-                    Context.MODE_PRIVATE);
-            newBitmap.compress(Bitmap.CompressFormat.PNG, 60, out);
-            out.flush();
-            out.close();
-            //get absolute path
-            String realPath = file.getAbsolutePath();
-            File f = new File(realPath);
-            uri = Uri.fromFile(f);
-
-        } catch (Exception e) {
-            Log.e("Your Error Message", e.getMessage());
-        }
-        return uri;
-    }
 
     @Override
     public void selectedIndices(List<Integer> indices) {
@@ -596,6 +628,18 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
         }
 
     }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 
     @Override
     public void selectedStrings(List<String> flats) {
@@ -821,7 +865,23 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
         checkBox.setEnabled(false);
         mProgressBar.setVisibility(View.VISIBLE);
         final StorageReference ref = storageReference.child("guest_vehicle_images/"+ UUID.randomUUID().toString());
-        uploadTask = ref.putFile(selectedImageURI);
+
+        try {
+
+            Bitmap bitmap_photo = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageURI);
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap_photo.compress(Bitmap.CompressFormat.JPEG,30,stream);
+            byte[] byteArray = stream.toByteArray();
+            bitmap_photo.recycle();
+
+            uploadTask=ref.putBytes(byteArray);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
 
         uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override

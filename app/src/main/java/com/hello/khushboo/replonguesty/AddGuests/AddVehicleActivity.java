@@ -12,6 +12,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -35,7 +37,9 @@ import com.hello.khushboo.replonguesty.Image;
 import com.hello.khushboo.replonguesty.R;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -44,6 +48,7 @@ public class AddVehicleActivity extends AppCompatActivity {
 
     public static final String TAG = "AddVehicleActivity";
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 56;
+    public static final int MEDIA_TYPE_IMAGE = 1;
 
     ImageView back_add_veh;
     Button add_vehicle;
@@ -52,7 +57,7 @@ public class AddVehicleActivity extends AppCompatActivity {
 
     //for images
     Uri selectedImageURI;
-    Uri downloadUri;
+    Uri file_camera_uri;
     String imageURL="";
     StorageTask uploadTask;
     FirebaseStorage storage;
@@ -93,6 +98,9 @@ public class AddVehicleActivity extends AppCompatActivity {
             }
         });
 
+        //for camera intent
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
 
         // Spinner element
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);
@@ -169,6 +177,16 @@ public class AddVehicleActivity extends AppCompatActivity {
         });
     }
 
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     public void dialogShowPhoto() {
         String takePhoto = "Take Photo";
@@ -188,8 +206,23 @@ public class AddVehicleActivity extends AppCompatActivity {
 //                    startActivityForResult(intent, RESULT_LOAD_IMAGE);
 //                }
 //                else
+
                 if (items[item].equals(finalTakephoto)) {
-                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+                    int PERMISSION_ALL = 1;
+                    String[] PERMISSIONS = {
+                            android.Manifest.permission.READ_CONTACTS,
+                            android.Manifest.permission.WRITE_CONTACTS,
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            android.Manifest.permission.READ_SMS,
+                            android.Manifest.permission.CAMERA
+                    };
+
+                    if(!hasPermissions(getApplicationContext(), PERMISSIONS)){
+                        ActivityCompat.requestPermissions(AddVehicleActivity.this, PERMISSIONS, PERMISSION_ALL);
+                    }
+
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
 
 
                         if (ActivityCompat.shouldShowRequestPermissionRationale(AddVehicleActivity.this,
@@ -247,6 +280,9 @@ public class AddVehicleActivity extends AppCompatActivity {
 
                     }else{
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        file_camera_uri =  getOutputMediaFileUri(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, file_camera_uri);
                         startActivityForResult(intent, REQUEST_CAMERA);
                     }
 
@@ -257,7 +293,33 @@ public class AddVehicleActivity extends AppCompatActivity {
 
 
     }
+    private static Uri getOutputMediaFileUri(int type){
+        return Uri.fromFile(getOutputMediaFile(type));
+    }
 
+    private static File getOutputMediaFile(int type){
+
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "ReplonHome");
+
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                Log.d(TAG, "failed to create directory");
+                return null;
+            }
+        }
+
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        if (type == MEDIA_TYPE_IMAGE){
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "IMG_"+ timeStamp + ".jpg");
+        } else {
+            return null;
+        }
+
+        return mediaFile;
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -269,9 +331,8 @@ public class AddVehicleActivity extends AppCompatActivity {
 
 
             }else{
-                bitmap_photo=(Bitmap)data.getExtras().get("data");
-                vehicle_image.setImageBitmap(bitmap_photo);
-                selectedImageURI=bitmapToUriConverter(bitmap_photo);
+                vehicle_image.setImageURI(file_camera_uri);
+                selectedImageURI=file_camera_uri;
                 // uploadImage();
             }
 
@@ -297,58 +358,6 @@ public class AddVehicleActivity extends AppCompatActivity {
 //        }
     }
 
-    //to convert bitmap to image uri
-    public Uri bitmapToUriConverter(Bitmap mBitmap) {
-        Uri uri = null;
-        try {
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            // Calculate inSampleSize
-            options.inSampleSize = calculateInSampleSize(options, 100, 100);
-
-            // Decode bitmap with inSampleSize set
-            options.inJustDecodeBounds = false;
-            Bitmap newBitmap = Bitmap.createScaledBitmap(mBitmap, 200, 200,
-                    true);
-            File file = new File(getApplicationContext().getFilesDir(), "Image"
-                    + new Random().nextInt() + ".jpeg");
-            FileOutputStream out = getApplicationContext().openFileOutput(file.getName(),
-                    Context.MODE_PRIVATE);
-            newBitmap.compress(Bitmap.CompressFormat.PNG, 60, out);
-            out.flush();
-            out.close();
-            //get absolute path
-            String realPath = file.getAbsolutePath();
-            File f = new File(realPath);
-            uri = Uri.fromFile(f);
-
-        } catch (Exception e) {
-            Log.e("Your Error Message", e.getMessage());
-        }
-        return uri;
-    }
-
-
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
 
 
 }
