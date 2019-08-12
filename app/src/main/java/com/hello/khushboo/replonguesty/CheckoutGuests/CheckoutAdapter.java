@@ -39,20 +39,20 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.Checko
     @Override
     public void onBindViewHolder(@NonNull CheckoutHolder checkoutHolder, int i) {
 
-        Log.i("","inCallAdapter");
+//        Log.i("","inCallAdapter");
 
-        final GuestDataFirebase guestDataFirebase=checkoutList.get(i);
-
-        checkoutHolder.guest_name.setText(String.valueOf(guestDataFirebase.getName()));
-        checkoutHolder.guest_purpose.setText(String.valueOf(guestDataFirebase.getPurpose()));
-        checkoutHolder.guest_flatno.setText(String.valueOf(guestDataFirebase.getFlat_no()));
-        checkoutHolder.dateAndTime.setText(String.valueOf(guestDataFirebase.getCheck_in_time()));
-        checkoutHolder.dateAndTime_out.setText(String.valueOf(guestDataFirebase.getCheckout_time()));
-
-        if(guestDataFirebase.getCheckout()){
-            checkoutHolder.btn_checkout.setVisibility(View.GONE);
-            checkoutHolder.dateAndTime_out.setText(String.valueOf(guestDataFirebase.getCheckout_time()));
-        }
+//        final GuestDataFirebase guestDataFirebase=checkoutList.get(i);
+//
+//        checkoutHolder.guest_name.setText(String.valueOf(guestDataFirebase.getName()));
+//        checkoutHolder.guest_purpose.setText(String.valueOf(guestDataFirebase.getPurpose()));
+//        checkoutHolder.guest_flatno.setText(String.valueOf(guestDataFirebase.getFlat_no()));
+//        checkoutHolder.dateAndTime.setText(String.valueOf(guestDataFirebase.getCheck_in_time()));
+//        checkoutHolder.dateAndTime_out.setText(String.valueOf(guestDataFirebase.getCheckout_time()));
+//
+//        if(guestDataFirebase.getCheckout()){
+//            checkoutHolder.btn_checkout.setVisibility(View.GONE);
+//            checkoutHolder.dateAndTime_out.setText(String.valueOf(guestDataFirebase.getCheckout_time()));
+//        }
 
 
     }

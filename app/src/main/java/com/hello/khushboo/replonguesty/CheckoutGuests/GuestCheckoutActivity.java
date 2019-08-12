@@ -217,16 +217,23 @@ public class GuestCheckoutActivity extends AppCompatActivity {
                                                     sfd = new SimpleDateFormat("dd/MM/yy, h:mm a");
                                                     String out_date = sfd.format(fb_date_out);
 
+                                                    Boolean checkout;
+                                                    if(document.getBoolean("checkout")==null ||!document.getBoolean("checkout")){
+                                                        checkout=FALSE;
+                                                    }else{
+                                                        checkout=TRUE;
+                                                    }
+
                                                     checkout_list.add(new GuestDataFirebase(
                                                            document.getString("car_type"),
-                                                            document.getBoolean("checkout"),
+                                                           checkout,
                                                             out_date,
                                                             in_date,
                                                             document.getDocumentReference("document_id"),
                                                             document.get("flat_no").toString(),
                                                             document.getBoolean("frequent_visitor"),
                                                             document.getString("name"),
-                                                           "",
+                                                            document.getString("phone_number"),
                                                             document.getString("profile_image_url"),
                                                             document.getString("purpose"),
                                                             document.getString("user_id"),
@@ -242,16 +249,22 @@ public class GuestCheckoutActivity extends AppCompatActivity {
                                                     SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yy, h:mm a");
                                                     String in_date = sfd.format(fb_date);
 
+                                                    Boolean checkout;
+                                                    if(document.getBoolean("checkout")==null ||!document.getBoolean("checkout")){
+                                                        checkout=FALSE;
+                                                    }else{
+                                                        checkout=TRUE;
+                                                    }
                                                     checkout_list.add(new GuestDataFirebase(
                                                             document.getString("car_type"),
-                                                            document.getBoolean("checkout"),
+                                                            checkout,
                                                             checkout_time,
                                                             in_date,
                                                             document.getDocumentReference("document_id"),
                                                             document.get("flat_no").toString(),
                                                             document.getBoolean("frequent_visitor"),
                                                             document.getString("name"),
-                                                            "",
+                                                            document.getString("phone_number"),
                                                             document.getString("profile_image_url"),
                                                             document.getString("purpose"),
                                                             document.getString("user_id"),
@@ -298,8 +311,11 @@ public class GuestCheckoutActivity extends AppCompatActivity {
                 checkoutHolder.dateAndTime_out.setText(String.valueOf(guestDataFirebase.getCheckout_time()));
 
                 if(guestDataFirebase.getCheckout()){
+                    Log.i(TAG,"Checkout is "+guestDataFirebase.getCheckout());
                     checkoutHolder.btn_checkout.setVisibility(View.GONE);
                     checkoutHolder.dateAndTime_out.setText(String.valueOf(guestDataFirebase.getCheckout_time()));
+                }else{
+                    checkoutHolder.btn_checkout.setVisibility(View.VISIBLE);
                 }
 
                 checkoutHolder.btn_checkout.setOnClickListener(new View.OnClickListener() {
