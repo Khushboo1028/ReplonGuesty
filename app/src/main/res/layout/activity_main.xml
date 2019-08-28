@@ -20,20 +20,10 @@
             android:layout_height="wrap_content"
             android:textSize="30dp"
             android:fontFamily="@font/avnxt_bold"
-            android:text="Replon Guesty"
+            android:text="Atithi"
             android:layout_marginTop="40dp"
             android:textColor="#FFFFFF"
             android:gravity="center"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18dp"
-            android:fontFamily="@font/avnxt_regular"
-            android:text="※ Atithi Devo Bhava ※"
-            android:textColor="#FFFFFF"
-            android:gravity="center"/>
-
 
         <TextView
             android:layout_width="match_parent"

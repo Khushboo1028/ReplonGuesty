@@ -34,12 +34,13 @@ MainActivity extends AppCompatActivity {
     RelativeLayout add,out,freq;
     TextView welcome_text;
 
-    String soc_name;
+    String soc_name,unique_id;
     //firebase
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     FirebaseFirestore db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,55 +58,6 @@ MainActivity extends AppCompatActivity {
             }
         });
         welcome_text = (TextView) findViewById(R.id.welcome_text);
-      //  db = FirebaseFirestore.getInstance();
-//        DocumentReference doc_ref = db.collection(getString(R.string.user)).document(mAuth.getCurrentUser().getUid());
-//        doc_ref.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-//            @Override
-//            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
-//                if (e != null) {
-//                    Log.w(TAG, "Listen failed.", e);
-//                    return;
-//                }
-//                String source = snapshot != null && snapshot.getMetadata().hasPendingWrites()
-//                        ? "Local" : "Server";
-//
-//                Log.i(TAG,"Source is "+source);
-//
-//                Log.i(TAG,"snapshot exits?  "+snapshot.exists());
-//
-//                if (snapshot != null &&snapshot.exists()) {
-//
-//                    Log.d(TAG, source + " data is here ->data: " + snapshot.getData());
-//
-//
-//                    final DocumentReference soc_id_ref = (DocumentReference) snapshot.get("society_id");
-//
-//                    Log.i(TAG, "Society ref is " + soc_id_ref);
-//                    soc_id_ref.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-//                        @Override
-//                        public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
-//                            if (e != null) {
-//                                Log.w(TAG, "Listen failed.", e);
-//                                return;
-//                            }
-//                            String source = snapshot != null && snapshot.getMetadata().hasPendingWrites()
-//                                    ? "Local" : "Server";
-//
-//                            Log.i(TAG,"Source is "+source);
-//
-//                            Log.i(TAG,"snapshot exits?  "+snapshot.exists());
-//
-//                            if (snapshot != null &&snapshot.exists()) {
-//
-//                                soc_name = snapshot.getString("society_name");
-//                                Log.i(TAG,"SOC NAME:"+soc_name);
-//                                welcome_text.setText("Welcome to "+ soc_name);
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        });
 
 
 
@@ -117,7 +69,9 @@ MainActivity extends AppCompatActivity {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), AddGuestActivity.class));
+                Intent intent=new Intent(getApplicationContext(), AddGuestActivity.class);
+                intent.putExtra("unique_id",unique_id);
+                startActivity(intent);
 
             }
         });
@@ -132,7 +86,9 @@ MainActivity extends AppCompatActivity {
         freq.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), FrequentVisitorsActivity.class));
+                Intent intent=new Intent(getApplicationContext(), FrequentVisitorsActivity.class);
+                intent.putExtra("unique_id",unique_id);
+                startActivity(intent);
             }
         });
         setupFirebaseAuth();
@@ -213,6 +169,9 @@ MainActivity extends AppCompatActivity {
                                 soc_name = snapshot.getString("society_name");
                                 Log.i(TAG,"SOC NAME:"+soc_name);
                                 welcome_text.setText("Welcome to "+ soc_name);
+
+                                unique_id=snapshot.getString("unique_id");
+                                Log.i(TAG,"unique_id is "+unique_id);
                             }
                         }
                     });

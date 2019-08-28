@@ -51,6 +51,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
@@ -64,6 +67,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -91,6 +95,7 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
     private static final int REQUEST_CAMERA = 100;
     private static final int RESULT_LOAD_IMAGE = 69;
 
+    ListenerRegistration listenerRegistration;
     EditText et_name,et_phoneNumber,veh_num,put_otp;
     String purpose,phone;
     TextView veh_type,verify_otp;
@@ -126,6 +131,11 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
     String profile_image_URL;
 
     Boolean FLAG1,FLAG2,FLAG3;
+    FirebaseFirestore db;
+    String unique_id,flat_doc_id;
+    List categories;
+    FirebaseUser firebaseUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,9 +144,9 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
 
         String[] array = {"A - 101", "A - 102","A - 103","A - 104","A - 201","A - 202","A - 203","A - 204","A - 301","A - 302","A - 303","A - 304","A - 401","A - 402","A - 403","A - 404"};
         multiSpinner =  (MultiSpinner) findViewById(R.id.mySpinner);
-        multiSpinner.setItems(array);
-        multiSpinner.setSelection(new int[]{});
-        multiSpinner.setListener(this);
+//        multiSpinner.setItems(array);
+//        multiSpinner.setSelection(new int[]{});
+//        multiSpinner.setListener(this);
         spinner = findViewById(R.id.spinner1);
 
         final List<String> purposes = new ArrayList<String>();
@@ -168,6 +178,54 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
             }
         });
 
+        db=FirebaseFirestore.getInstance();
+        mAuth=FirebaseAuth.getInstance();
+        firebaseUser=mAuth.getCurrentUser();
+        unique_id=getIntent().getStringExtra("unique_id");
+        final Query flat_Ref= db.collection(getString(R.string.society)).whereEqualTo("unique_id",unique_id);
+
+        categories = new ArrayList<String>();
+        listenerRegistration=flat_Ref.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable QuerySnapshot snapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+
+
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot.getDocuments().isEmpty()) {
+                    Log.i(TAG,"no societies");
+
+                } else {
+
+                    if(snapshot.getDocuments().get(0).get("flats_unavailable")!=null ) {
+
+                        categories = (ArrayList) ((ArrayList) snapshot.getDocuments().get(0).get("flats_unavailable"));
+                        Collections.sort(categories);
+
+                        flat_doc_id=snapshot.getDocuments().get(0).getId();
+                        multiSpinner.setItems(categories);
+                        multiSpinner.setSelection(new int[]{});
+                        multiSpinner.setListener(AddGuestActivity.this);
+
+
+                    }
+
+                    Log.i(TAG, "categories is " + categories);
+
+                    if(categories.isEmpty()){
+                        categories.add("No flats available");
+                    }
+
+
+
+                }
+
+
+            }
+        });
 
         back_add_guest = (ImageView) findViewById(R.id.back_add_guest);
         btn_add_vehicle = (Button) findViewById(R.id.add_veh);
@@ -212,7 +270,7 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
                 mVerificationId = verificationId;
                 mResendToken = token;
 
-                Log.i(TAG,"VERFICATION ID IS"+mVerificationId);
+                Log.i(TAG,"VERIFICATION ID IS"+mVerificationId);
                 Log.i(TAG,"RESEND TOKEN"+mResendToken);
 
             }
@@ -359,9 +417,6 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
                     }else{
                         Log.i(TAG,"THIS IS NOT A FREQUENT USER");
                         bool_frequent_visitor=FALSE;
-
-
-//
 
                         if(selectedImageUriString!=null && selectedImageURIProfile==null){
                             Log.i(TAG,"in 1");
@@ -729,7 +784,7 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
 
         Log.i(TAG,"DOCUMENT REFERENCE IS "+docRef.toString());
 
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        listenerRegistration=docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@javax.annotation.Nullable DocumentSnapshot snapshot,
                                 @javax.annotation.Nullable FirebaseFirestoreException e) {
@@ -751,6 +806,7 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
 
 
                     final DocumentReference soc_id_ref = (DocumentReference) snapshot.get("society_id");
+
 
                     Log.i(TAG, "Society ref is " + soc_id_ref);
 
@@ -1032,6 +1088,17 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
             }
         });
 
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (listenerRegistration!= null) {
+            listenerRegistration.remove();
+            listenerRegistration = null;
+        }
 
     }
 

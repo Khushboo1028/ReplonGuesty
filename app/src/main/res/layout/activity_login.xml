@@ -22,47 +22,75 @@
         >
 
 
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/topText"-->
+            <!--android:orientation="vertical"-->
+            <!--android:background="@drawable/grad_login">-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textSize="30dp"-->
+                <!--android:fontFamily="@font/avnxt_bold"-->
+                <!--android:text="Replon Guesty"-->
+                <!--android:layout_marginTop="40dp"-->
+                <!--android:textColor="#FFFFFF"-->
+                <!--android:gravity="center"/>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textSize="18dp"-->
+                <!--android:fontFamily="@font/avnxt_regular"-->
+                <!--android:text="※ Atithi Devo Bhava ※"-->
+                <!--android:textColor="#FFFFFF"-->
+                <!--android:gravity="center"/>-->
+
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:fontFamily="@font/avnxt_bold"-->
+                <!--android:gravity="center"-->
+                <!--android:text="LOGIN"-->
+                <!--android:layout_marginTop="60dp"-->
+                <!--android:layout_marginBottom="10dp"-->
+                <!--android:textColor="#FFFFFF"-->
+
+                <!--android:textSize="14dp" />-->
+
+
+        <!--</LinearLayout>-->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/topText"
+            android:background="@drawable/grad_login"
             android:orientation="vertical"
-            android:background="@drawable/grad_login">
+            >
+
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_filter"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="30dp"
-                android:fontFamily="@font/avnxt_bold"
-                android:text="Replon Guesty"
-                android:layout_marginTop="40dp"
-                android:textColor="#FFFFFF"
+                android:textSize="22dp"
+                android:fontFamily="@font/american_typewriter"
+                android:text="ilaaka Login"
+                android:textColor="@color/white"
                 android:gravity="center"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18dp"
-                android:fontFamily="@font/avnxt_regular"
-                android:text="※ Atithi Devo Bhava ※"
-                android:textColor="#FFFFFF"
-                android:gravity="center"/>
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/avnxt_bold"
-                android:gravity="center"
-                android:text="LOGIN"
-                android:layout_marginTop="60dp"
-                android:layout_marginBottom="10dp"
-                android:textColor="#FFFFFF"
-
-                android:textSize="14dp" />
 
 
         </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"

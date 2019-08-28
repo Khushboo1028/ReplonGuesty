@@ -22,5 +22,6 @@
     <string name="document_ref">document_id</string>
     <string name="checkout">checkout</string>
     <string name="checkout_time">checkout_time</string>
+    <string name="society">society</string>
 
 </resources>

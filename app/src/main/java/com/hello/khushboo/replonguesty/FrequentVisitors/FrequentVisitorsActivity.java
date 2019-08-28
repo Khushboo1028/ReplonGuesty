@@ -42,6 +42,7 @@ import com.hello.khushboo.replonguesty.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -68,7 +69,7 @@ public class FrequentVisitorsActivity extends AppCompatActivity {
     VisitorsAdapter mAdapter;
     RecyclerView recyclerView;
 
-    String[] array;
+    String[] flats;
 
     TextView no_freq_visitors;
 
@@ -77,7 +78,12 @@ public class FrequentVisitorsActivity extends AppCompatActivity {
     List<GuestDataFirebase> guestArrayList;
     ProgressBar progressBar;
 
-    List<String> flat_nos;
+    ListenerRegistration getGetDataListener;
+    List<String> flat_nos,categories;
+    String unique_id,flat_doc_id;
+    FirebaseUser firebaseUser;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,10 +111,19 @@ public class FrequentVisitorsActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
         no_freq_visitors = (TextView) findViewById(R.id.no_freq_visitors);
 
+        unique_id=getIntent().getStringExtra("unique_id");
         recyclerView.setLayoutManager(new LinearLayoutManager(this));//by default manager is vertical
 
         frequent_list=new ArrayList();
-        array = new String[]{"A - 101", "A - 102","A - 103","A - 104","A - 201","A - 202","A - 203","A - 204","A - 301","A - 302","A - 303","A - 304","A - 401","A - 402","A - 403","A - 404"};
+        //array = new String[]{"A - 101", "A - 102","A - 103","A - 104","A - 201","A - 202","A - 203","A - 204","A - 301","A - 302","A - 303","A - 304","A - 401","A - 402","A - 403","A - 404"};
+
+        db=FirebaseFirestore.getInstance();
+        mAuth=FirebaseAuth.getInstance();
+        firebaseUser=mAuth.getCurrentUser();
+        unique_id=getIntent().getStringExtra("unique_id");
+
+
+        categories = new ArrayList<>();
 
         searchView = findViewById(R.id.search_field);
         searchView.addTextChangedListener(new TextWatcher() {
@@ -132,6 +147,7 @@ public class FrequentVisitorsActivity extends AppCompatActivity {
 
         getData();
 
+        getFlats();
         mAdapter = new VisitorsAdapter(this,frequent_list){
 
             @Override
@@ -146,17 +162,21 @@ public class FrequentVisitorsActivity extends AppCompatActivity {
                 holder.guest_name.setText(String.valueOf(guestDataFirebase.getName()));
                 holder.purpose.setText(String.valueOf(guestDataFirebase.getPurpose()));
 
-                if (guestDataFirebase.getCheckout()){
-                    holder.btn_checkin.setVisibility(View.VISIBLE);
-                    holder.curr_checkin.setVisibility(View.GONE);
-                }else {
-                    holder.btn_checkin.setVisibility(View.GONE);
-                    holder.curr_checkin.setVisibility(View.VISIBLE);
-                }
-                if (String.valueOf(guestDataFirebase.getVehicle_no()).equals("")){
-                    holder.veh_num.setText("--NA--");
-                }else {
-                    holder.veh_num.setText(String.valueOf(guestDataFirebase.getVehicle_no()));
+                if(guestDataFirebase.getCheckout()!=null) {
+
+
+                    if (guestDataFirebase.getCheckout()) {
+                        holder.btn_checkin.setVisibility(View.VISIBLE);
+                        holder.curr_checkin.setVisibility(View.GONE);
+                    } else {
+                        holder.btn_checkin.setVisibility(View.GONE);
+                        holder.curr_checkin.setVisibility(View.VISIBLE);
+                    }
+                    if (String.valueOf(guestDataFirebase.getVehicle_no()).equals("")) {
+                        holder.veh_num.setText("--NA--");
+                    } else {
+                        holder.veh_num.setText(String.valueOf(guestDataFirebase.getVehicle_no()));
+                    }
                 }
                 holder.phone.setText(String.valueOf(guestDataFirebase.getPhone_no()));
 
@@ -169,18 +189,18 @@ public class FrequentVisitorsActivity extends AppCompatActivity {
                         final AlertDialog.Builder builder =
                                 new AlertDialog.Builder(FrequentVisitorsActivity.this);
                         builder.setTitle("Select Flat Nos.")
-                                .setMultiChoiceItems(array, null,
+                                .setMultiChoiceItems(flats, null,
                                         new DialogInterface.OnMultiChoiceClickListener() {
                                             public void onClick(DialogInterface dialog, int item, boolean isChecked) {
 
                                                 if (isChecked) {
                                                     // if the user checked the item, add it to the selected items
-                                                    flat_nos.add(array[item]);
+                                                    flat_nos.add(flats[item]);
                                                 }
 
-                                                else if (flat_nos.contains(array[item])) {
+                                                else if (flat_nos.contains(flats[item])) {
                                                     // else if the item is already in the array, remove it
-                                                    flat_nos.remove(String.valueOf(array[item]));
+                                                    flat_nos.remove(String.valueOf(flats[item]));
                                                 }
                                             }
                                         })
@@ -225,7 +245,7 @@ public class FrequentVisitorsActivity extends AppCompatActivity {
                                         final DocumentReference docRef = db.collection(user).document(user_id);
                                         Log.i(TAG,"DOCUMENT REFERENCE IS "+docRef.toString());
 
-                                        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                        getDataListener=docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                                             @Override
                                             public void onEvent(@javax.annotation.Nullable DocumentSnapshot snapshot,
                                                                 @javax.annotation.Nullable FirebaseFirestoreException e) {
@@ -348,6 +368,50 @@ public class FrequentVisitorsActivity extends AppCompatActivity {
             }
 
         };
+
+    }
+
+    private void getFlats(){
+        final Query flat_Ref= db.collection(getString(R.string.society)).whereEqualTo("unique_id",unique_id);
+        getDataListener=flat_Ref.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable QuerySnapshot snapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+
+
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot.getDocuments().isEmpty()) {
+                    Log.i(TAG,"no societies");
+
+                } else {
+
+                    if(snapshot.getDocuments().get(0).get("flats_unavailable")!=null ) {
+
+                        categories = (ArrayList) ((ArrayList) snapshot.getDocuments().get(0).get("flats_unavailable"));
+                        Collections.sort(categories);
+                        flats = categories.toArray(new String[categories.size()]);
+                        Log.i(TAG,"flats are "+flats);
+                        mAdapter.notifyDataSetChanged();
+
+
+                    }
+
+                    Log.i(TAG, "categories is " + categories);
+
+                    if(categories.isEmpty()){
+                        categories.add("No flats available");
+                    }
+
+
+
+                }
+
+
+            }
+        });
 
     }
 
@@ -517,4 +581,16 @@ public class FrequentVisitorsActivity extends AppCompatActivity {
         dialog.show();
 
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (getDataListener!= null) {
+            getDataListener.remove();
+            getDataListener = null;
+        }
+
+    }
+
 }

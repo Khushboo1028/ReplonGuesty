@@ -31,6 +31,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -60,6 +61,7 @@ public class GuestCheckoutActivity extends AppCompatActivity {
     DocumentReference soc_id_ref;
     TextView tv_empty_list;
 
+    ListenerRegistration getDataListener;
     TextView start_date,end_date;
     DatePickerDialog pickerDialog;
 
@@ -163,7 +165,7 @@ public class GuestCheckoutActivity extends AppCompatActivity {
         final String guestlist = getString(R.string.guestlist);
         Log.i(TAG,"Doc ref is "+docRef);
 
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+       getDataListener= docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable final DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
 
@@ -182,7 +184,7 @@ public class GuestCheckoutActivity extends AppCompatActivity {
 
                     Log.i(TAG,"society id " + soc_id_ref);
 
-                    soc_id_ref.collection(guestlist).orderBy("date_created", Query.Direction.DESCENDING)
+                   getDataListener=soc_id_ref.collection(guestlist).orderBy("date_created", Query.Direction.DESCENDING)
                             .addSnapshotListener(new EventListener<QuerySnapshot>() {
                                 @Override
                                 public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
@@ -285,9 +287,9 @@ public class GuestCheckoutActivity extends AppCompatActivity {
                                 }
                             });
                 }else {
-                    Log.i(TAG,"An error occured: "+ e.getMessage());
+                    Log.i(TAG,"An error occurred: "+ e.getMessage());
                     progressBar.setVisibility(View.GONE);
-                    showMessage("Error","An internal error occured: ",R.drawable.ic_error_dialog);
+                    //showMessage("Error","An internal error occured: ",R.drawable.ic_error_dialog);
                 }
 
             }
@@ -639,7 +641,7 @@ public class GuestCheckoutActivity extends AppCompatActivity {
 
         final String guestData = getString(R.string.guestlist);
 
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        getDataListener=docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                 if(e!=null){
@@ -654,7 +656,7 @@ public class GuestCheckoutActivity extends AppCompatActivity {
                     soc_id_ref = (DocumentReference) snapshot.get("society_id");
 
 
-                    soc_id_ref.collection(guestData).orderBy("date_created")
+                    getDataListener=soc_id_ref.collection(guestData).orderBy("date_created")
                             .whereEqualTo("checkout",aTrue)
                             .addSnapshotListener(new EventListener<QuerySnapshot>() {
                                 @Override
@@ -757,7 +759,7 @@ public class GuestCheckoutActivity extends AppCompatActivity {
 
         final String guestData = getString(R.string.guestlist);
 
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        getDataListener=docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                 if(e!=null){
@@ -772,7 +774,7 @@ public class GuestCheckoutActivity extends AppCompatActivity {
                     soc_id_ref = (DocumentReference) snapshot.get("society_id");
 
 
-                    soc_id_ref.collection(guestData).orderBy("date_created")
+                    getDataListener=soc_id_ref.collection(guestData).orderBy("date_created")
                             .whereEqualTo("checkout",aTrue)
                             .startAt(new Timestamp(dateStart))
                             .endAt(new Timestamp(dateEnd))
@@ -880,7 +882,7 @@ public class GuestCheckoutActivity extends AppCompatActivity {
 
 
 
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+       getDataListener= docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                 if(e!=null){
@@ -895,7 +897,7 @@ public class GuestCheckoutActivity extends AppCompatActivity {
                     soc_id_ref = (DocumentReference) snapshot.get("society_id");
 
 
-                    soc_id_ref.collection(guestData).orderBy("date_created")
+                    getDataListener=soc_id_ref.collection(guestData).orderBy("date_created")
                             .startAt(new Timestamp(dateStart)).endAt(new Timestamp(dateEnd))
                             .addSnapshotListener(new EventListener<QuerySnapshot>() {
                                 @Override
@@ -985,5 +987,15 @@ public class GuestCheckoutActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (getDataListener!= null) {
+            getDataListener.remove();
+            getDataListener = null;
+        }
+
+    }
 
 }
