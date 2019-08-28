@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="22dp"
                 android:fontFamily="@font/american_typewriter"
-                android:text="ilaaka Login"
+                android:text="Atithi Login"
                 android:textColor="@color/white"
                 android:gravity="center"/>
 
