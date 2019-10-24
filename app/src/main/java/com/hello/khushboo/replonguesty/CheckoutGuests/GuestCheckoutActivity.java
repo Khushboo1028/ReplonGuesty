@@ -35,6 +35,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.hello.khushboo.replonguesty.DefaultTextConfig;
 import com.hello.khushboo.replonguesty.GuestDataFirebase;
 import com.hello.khushboo.replonguesty.R;
 
@@ -80,6 +81,8 @@ public class GuestCheckoutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DefaultTextConfig defaultTextConfig = new DefaultTextConfig();
+        defaultTextConfig.adjustFontScale(getResources().getConfiguration(), GuestCheckoutActivity.this);
         setContentView(R.layout.activity_guest_checkout);
 
         back_checkout = (ImageView) findViewById(R.id.back_checkout);
@@ -315,9 +318,11 @@ public class GuestCheckoutActivity extends AppCompatActivity {
                 if(guestDataFirebase.getCheckout()){
                     Log.i(TAG,"Checkout is "+guestDataFirebase.getCheckout());
                     checkoutHolder.btn_checkout.setVisibility(View.GONE);
+                    checkoutHolder.checkout_tick.setVisibility(View.VISIBLE);
                     checkoutHolder.dateAndTime_out.setText(String.valueOf(guestDataFirebase.getCheckout_time()));
                 }else{
                     checkoutHolder.btn_checkout.setVisibility(View.VISIBLE);
+                    checkoutHolder.checkout_tick.setVisibility(View.GONE);
                 }
 
                 checkoutHolder.btn_checkout.setOnClickListener(new View.OnClickListener() {
@@ -457,7 +462,7 @@ public class GuestCheckoutActivity extends AppCompatActivity {
                 }
                 boolean_checkout[0] =TRUE;
                 Log.i(TAG,"Button pressed");
-                btn_checkout.setBackgroundColor(Color.parseColor("#38ada9"));
+                btn_checkout.setBackgroundColor(getResources().getColor(R.color.greenCheck));
                 btn_checkout.setTextColor(Color.parseColor("#FFFFFF"));
 
             }
@@ -469,7 +474,7 @@ public class GuestCheckoutActivity extends AppCompatActivity {
 
                 if( boolean_checkout[0]){
                     boolean_checkout[0] =FALSE;
-                    btn_checkout.setTextColor(Color.parseColor("#38ada9"));
+                    btn_checkout.setTextColor(getResources().getColor(R.color.greenCheck));
                     btn_checkout.setBackgroundColor(Color.parseColor("#1A707070"));
                 }
 
@@ -492,7 +497,7 @@ public class GuestCheckoutActivity extends AppCompatActivity {
 
                 if( boolean_checkout[0]){
                     boolean_checkout[0] =FALSE;
-                    btn_checkout.setTextColor(Color.parseColor("#38ada9"));
+                    btn_checkout.setTextColor(getResources().getColor(R.color.greenCheck));
                     btn_checkout.setBackgroundColor(Color.parseColor("#1A707070"));
                 }
 

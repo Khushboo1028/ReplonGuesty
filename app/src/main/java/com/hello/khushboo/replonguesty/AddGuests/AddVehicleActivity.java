@@ -33,6 +33,7 @@ import android.widget.TextView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
+import com.hello.khushboo.replonguesty.DefaultTextConfig;
 import com.hello.khushboo.replonguesty.Image;
 import com.hello.khushboo.replonguesty.R;
 import java.io.File;
@@ -74,6 +75,9 @@ public class AddVehicleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DefaultTextConfig defaultTextConfig = new DefaultTextConfig();
+        defaultTextConfig.adjustFontScale(getResources().getConfiguration(), AddVehicleActivity.this);
+
         setContentView(R.layout.activity_add_vehicle);
 
         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.mainrel);

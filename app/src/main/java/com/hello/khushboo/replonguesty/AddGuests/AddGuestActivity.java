@@ -8,14 +8,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -58,12 +63,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.hello.khushboo.replonguesty.DefaultTextConfig;
 import com.hello.khushboo.replonguesty.MultiSpinner;
 import com.hello.khushboo.replonguesty.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,7 +77,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -135,18 +139,20 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
     String unique_id,flat_doc_id;
     List categories;
     FirebaseUser firebaseUser;
+    boolean isConnected,monitoringConnectivity;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        DefaultTextConfig defaultTextConfig = new DefaultTextConfig();
+        defaultTextConfig.adjustFontScale(getResources().getConfiguration(), AddGuestActivity.this);
         setContentView(R.layout.activity_add_guest);
 
-        String[] array = {"A - 101", "A - 102","A - 103","A - 104","A - 201","A - 202","A - 203","A - 204","A - 301","A - 302","A - 303","A - 304","A - 401","A - 402","A - 403","A - 404"};
+//        String[] array = {"A - 101", "A - 102","A - 103","A - 104","A - 201","A - 202","A - 203","A - 204","A - 301","A - 302","A - 303","A - 304","A - 401","A - 402","A - 403","A - 404"};
         multiSpinner =  (MultiSpinner) findViewById(R.id.mySpinner);
-//        multiSpinner.setItems(array);
-//        multiSpinner.setSelection(new int[]{});
-//        multiSpinner.setListener(this);
         spinner = findViewById(R.id.spinner1);
 
         final List<String> purposes = new ArrayList<String>();
@@ -312,54 +318,7 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
                 dialogShowPhoto();
             }
         });
-//        btn_get_otp = (Button) findViewById(R.id.btn_get_otp);
 
-//        btn_get_otp.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                put_otp.setVisibility(View.VISIBLE);
-//                verify_otp.setVisibility(View.VISIBLE);
-//
-//                PhoneAuthProvider.getInstance().verifyPhoneNumber("+91 "+et_phoneNumber.getText().toString(),120, TimeUnit.SECONDS,AddGuestActivity.this,mCallbacks);
-//
-//
-//            }
-//        });
-
-//        verify_otp.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                btn_add_guest.setEnabled(false);
-//                if(put_otp.getText().toString().equals("")){
-//                    showMessage("Error!","Enter The OTP Provided",R.drawable.ic_error_dialog);
-//                }
-//                else{
-//
-//                    verifyPhoneNumberWithCode(mVerificationId,put_otp.getText().toString());
-//                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, put_otp.getText().toString());
-//                    Log.i(TAG,credential.getProvider());
-//
-////                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, put_otp.getText().toString());
-////                    mAuth.signInWithCredential(credential).addOnCompleteListener(AddGuestActivity.this, new OnCompleteListener<AuthResult>() {
-////                        @Override
-////                        public void onComplete(@NonNull Task<AuthResult> task) {
-////                            if (task.isSuccessful()) {
-////                                Toast.makeText(AddGuestActivity.this, "Verification Success", Toast.LENGTH_SHORT).show();
-////                                mAuth.signOut();
-////                                mAuth.signInWithEmailAndPassword("khushboo1028@gmail.com","hello12345");
-////                                btn_add_guest.setEnabled(true);
-////                            } else {
-////                                if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-////                                    Toast.makeText(AddGuestActivity.this, "Verification Failed, Invalid credentials", Toast.LENGTH_SHORT).show();
-////                                }
-////                            }
-////                        }
-////                    });
-//
-//                }
-//            }
-//        });
 
 
         btn_add_guest.setOnClickListener(new View.OnClickListener() {
@@ -387,53 +346,89 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
 
 
                 else{
-                    Log.i(TAG,"DATA MALE CHE");
-
-                    if(checkBox.isChecked()){
-                        bool_frequent_visitor=TRUE;
-                        Log.i(TAG,"THIS IS FREQUENT USER");
-
-                        if(selectedImageUriString!=null && selectedImageURIProfile==null){
-                            Log.i(TAG,"in 1");
-                            selectedImageURI= Uri.parse(selectedImageUriString);
-                            uploadImage();
-                            Log.i(TAG,"in 2");
-
-                        }else if(selectedImageUriString==null && selectedImageURIProfile==null){
-                            addData();
-                            Log.i(TAG,"in 3");
-                        }else if(selectedImageURIProfile!=null && selectedImageUriString==null){
-                            Log.i(TAG,"in 4");
-                            uploadProfileImage();
-                        }else if(selectedImageUriString!=null && selectedImageURIProfile!=null){
-                            Log.i(TAG,"in 5");
-                            selectedImageURI= Uri.parse(selectedImageUriString);
-                           uploadProfileandVehicleImage();
-                        }
 
 
+                    if(!isConnected){
+                        final Dialog dialog = new Dialog(AddGuestActivity.this);
+                        dialog.setContentView(R.layout.dialog_new);
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        Log.i(TAG,"NEW DIALOG");
+
+                        Button btn_positive = dialog.findViewById(R.id.btn_positive);
+                        Button btn_negative = dialog.findViewById(R.id.btn_negative);
+                        TextView dialog_title = dialog.findViewById(R.id.dialog_title);
+                        TextView dialog_message = dialog.findViewById(R.id.dialog_message);
+                        ImageView dialog_icon = dialog.findViewById(R.id.dialog_img);
+
+                        dialog_title.setText("Internet Unavailable");
+                        dialog_message.setText("Poor network connectivity detected! Please check your internet connection");
+                        //        btn_negative.setVisibility(View.GONE);
+                        //        btn_positive.setVisibility(View.GONE);
+
+                        btn_positive.setText("OK");
+                        btn_negative.setText("Go to Settings");
+                        btn_positive.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+                        btn_negative.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent myIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                                startActivity(myIntent);
+                            }
+                        });
+                        dialog_icon.setImageResource(R.drawable.ic_no_internet);
+                        dialog.show();
+                    }else {
 
 
-                    }else{
-                        Log.i(TAG,"THIS IS NOT A FREQUENT USER");
-                        bool_frequent_visitor=FALSE;
+                        if (checkBox.isChecked()) {
+                            bool_frequent_visitor = TRUE;
+                            Log.i(TAG, "THIS IS FREQUENT USER");
 
-                        if(selectedImageUriString!=null && selectedImageURIProfile==null){
-                            Log.i(TAG,"in 1");
-                            selectedImageURI= Uri.parse(selectedImageUriString);
-                            uploadImage();
-                            Log.i(TAG,"in 2");
+                            if (selectedImageUriString != null && selectedImageURIProfile == null) {
+                                Log.i(TAG, "in 1");
+                                selectedImageURI = Uri.parse(selectedImageUriString);
+                                uploadImage();
+                                Log.i(TAG, "in 2");
 
-                        }else if(selectedImageUriString==null && selectedImageURIProfile==null){
-                            addData();
-                            Log.i(TAG,"in 3");
-                        }else if(selectedImageURIProfile!=null && selectedImageUriString==null){
-                            Log.i(TAG,"in 4");
-                            uploadProfileImage();
-                        }else if(selectedImageUriString!=null && selectedImageURIProfile!=null){
-                            selectedImageURI= Uri.parse(selectedImageUriString);
-                            Log.i(TAG,"in 5");
-                            uploadProfileandVehicleImage();
+                            } else if (selectedImageUriString == null && selectedImageURIProfile == null) {
+                                addData();
+                                Log.i(TAG, "in 3");
+                            } else if (selectedImageURIProfile != null && selectedImageUriString == null) {
+                                Log.i(TAG, "in 4");
+                                uploadProfileImage();
+                            } else if (selectedImageUriString != null && selectedImageURIProfile != null) {
+                                Log.i(TAG, "in 5");
+                                selectedImageURI = Uri.parse(selectedImageUriString);
+                                uploadProfileandVehicleImage();
+                            }
+
+
+                        } else {
+                            Log.i(TAG, "THIS IS NOT A FREQUENT USER");
+                            bool_frequent_visitor = FALSE;
+
+                            if (selectedImageUriString != null && selectedImageURIProfile == null) {
+                                Log.i(TAG, "in 1");
+                                selectedImageURI = Uri.parse(selectedImageUriString);
+                                uploadImage();
+                                Log.i(TAG, "in 2");
+
+                            } else if (selectedImageUriString == null && selectedImageURIProfile == null) {
+                                addData();
+                                Log.i(TAG, "in 3");
+                            } else if (selectedImageURIProfile != null && selectedImageUriString == null) {
+                                Log.i(TAG, "in 4");
+                                uploadProfileImage();
+                            } else if (selectedImageUriString != null && selectedImageURIProfile != null) {
+                                selectedImageURI = Uri.parse(selectedImageUriString);
+                                Log.i(TAG, "in 5");
+                                uploadProfileandVehicleImage();
+                            }
                         }
                     }
 
@@ -1100,6 +1095,134 @@ public class AddGuestActivity extends AppCompatActivity implements MultiSpinner.
             listenerRegistration = null;
         }
 
+    }
+
+    private ConnectivityManager.NetworkCallback connectivityCallback = new ConnectivityManager.NetworkCallback() {
+        @Override
+        public void onAvailable(Network network) {
+            isConnected = true;
+            Log.i(TAG, "INTERNET CONNECTED");
+        }
+
+        @Override
+        public void onLost(Network network) {
+            isConnected = false;
+            Log.i(TAG,"Internet lost");
+            final Dialog dialog = new Dialog(AddGuestActivity.this);
+            dialog.setContentView(R.layout.dialog_new);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Log.i(TAG,"NEW DIALOG");
+
+            Button btn_positive = dialog.findViewById(R.id.btn_positive);
+            Button btn_negative = dialog.findViewById(R.id.btn_negative);
+            TextView dialog_title = dialog.findViewById(R.id.dialog_title);
+            TextView dialog_message = dialog.findViewById(R.id.dialog_message);
+            ImageView dialog_icon = dialog.findViewById(R.id.dialog_img);
+
+            dialog_title.setText("Internet Unavailable");
+            dialog_message.setText("Poor network connectivity detected! Please check your internet connection");
+            //        btn_negative.setVisibility(View.GONE);
+            //        btn_positive.setVisibility(View.GONE);
+
+            btn_positive.setText("OK");
+            btn_negative.setText("Go to Settings");
+            btn_positive.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            btn_negative.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent myIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                    startActivity(myIntent);
+                }
+            });
+            dialog_icon.setImageResource(R.drawable.ic_no_internet);
+            dialog.show();
+        }
+    };
+
+    // Method to check network connectivity in Main Activity
+    private void checkConnectivity() {
+        // here we are getting the connectivity service from connectivity manager
+        final ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(
+                Context.CONNECTIVITY_SERVICE);
+
+        // Getting network Info
+        // give Network Access Permission in Manifest
+        final NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+        // isConnected is a boolean variable
+        // here we check if network is connected or is getting connected
+        isConnected = activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+
+        if (!isConnected) {
+            // SHOW ANY ACTION YOU WANT TO SHOW
+            // WHEN WE ARE NOT CONNECTED TO INTERNET/NETWORK
+            Log.i(TAG, " NO NETWORK!");
+            // if Network is not connected we will register a network callback to  monitor network
+            connectivityManager.registerNetworkCallback(
+                    new NetworkRequest.Builder()
+                            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                            .build(), connectivityCallback);
+            monitoringConnectivity = true;
+
+            final Dialog dialog = new Dialog(AddGuestActivity.this);
+            dialog.setContentView(R.layout.dialog_new);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Log.i(TAG,"NEW DIALOG");
+
+            Button btn_positive = dialog.findViewById(R.id.btn_positive);
+            Button btn_negative = dialog.findViewById(R.id.btn_negative);
+            TextView dialog_title = dialog.findViewById(R.id.dialog_title);
+            TextView dialog_message = dialog.findViewById(R.id.dialog_message);
+            ImageView dialog_icon = dialog.findViewById(R.id.dialog_img);
+
+            dialog_title.setText("Internet Unavailable");
+            dialog_message.setText("Poor network connectivity detected! Please check your internet connection");
+            //        btn_negative.setVisibility(View.GONE);
+            //        btn_positive.setVisibility(View.GONE);
+
+            btn_positive.setText("OK");
+            btn_negative.setText("Go to Settings");
+            btn_positive.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            btn_negative.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent myIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                    startActivity(myIntent);
+                }
+            });
+            dialog_icon.setImageResource(R.drawable.ic_no_internet);
+            dialog.show();
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkConnectivity();
+
+    }
+
+    @Override
+    protected void onPause() {
+        // if network is being moniterd then we will unregister the network callback
+        if (monitoringConnectivity) {
+            final ConnectivityManager connectivityManager
+                    = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            connectivityManager.unregisterNetworkCallback(connectivityCallback);
+            monitoringConnectivity = false;
+        }
+        super.onPause();
     }
 
 

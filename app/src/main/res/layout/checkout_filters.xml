@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="CHECKOUT"
             android:background="#1A707070"
-            android:textColor="#38ada9"
+            android:textColor="@color/greenCheck"
             android:id="@+id/btn_checkout"
             android:layout_marginHorizontal="20dp"
             android:layout_weight="3"/>

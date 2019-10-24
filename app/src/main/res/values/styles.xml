@@ -11,4 +11,11 @@
     <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/gDark</item>
     </style>
+
+
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/splash_theme</item>
+    </style>
+
+
 </resources>

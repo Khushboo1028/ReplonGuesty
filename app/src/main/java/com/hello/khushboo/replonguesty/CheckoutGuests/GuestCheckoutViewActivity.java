@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.hello.khushboo.replonguesty.DefaultTextConfig;
+import com.hello.khushboo.replonguesty.MainActivity;
 import com.hello.khushboo.replonguesty.R;
 
 
@@ -25,6 +27,8 @@ public class GuestCheckoutViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DefaultTextConfig defaultTextConfig = new DefaultTextConfig();
+        defaultTextConfig.adjustFontScale(getResources().getConfiguration(), GuestCheckoutViewActivity.this);
         setContentView(R.layout.activity_guest_checkout_view);
 
         back = findViewById(R.id.back);

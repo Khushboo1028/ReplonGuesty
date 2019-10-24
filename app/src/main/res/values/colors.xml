@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#00574B</color>
+<!--    <color name="colorPrimary">#008577</color>-->
+<!--    <color name="colorPrimaryDark">#00574B</color>-->
+<!--    <color name="colorAccent">#00574B</color>-->
 
-    <color name="gDark">#00B894</color>
-    <color name="gLight">#55EFC4</color>
+<!--    <color name="gDark">#00B894</color>-->
+<!--    <color name="gLight">#55EFC4</color>-->
 
     <color name="incorrect_red">#e74c3c</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+
+
+
+    <!--new theme-->
+    <color name="colorPrimary">#6f1E51</color>
+    <color name="colorPrimaryDark">#6f1E51</color>
+    <color name="colorAccent">#6f1E51</color>
+
+    <color name="gDark">#6f1E51</color>
+    <color name="gLight">#6f1E51</color>
+    <color name="darkGrey">#434343</color>
+    <color name="lightGrey">#777777</color>
+
+    <color name="greenCheck">#137E00</color>
 </resources>

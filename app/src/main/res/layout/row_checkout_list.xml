@@ -148,9 +148,20 @@
         android:text="Checkout"
         android:fontFamily="@font/avnxt_regular"
         android:textSize="12sp"
-        android:background="#FFFFFF"
+        android:background="@color/white"
         android:textColor="@color/gDark"
         android:paddingHorizontal="5dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkout_tick"
+        android:layout_centerInParent="true"
+        android:src="@drawable/checkout_tick"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="40dp"
+
+        />
 
 
 

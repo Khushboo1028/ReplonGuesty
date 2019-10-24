@@ -12,30 +12,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/topText"
+        android:background="@drawable/grad_login"
         android:orientation="vertical"
-        android:background="@drawable/grad_login">
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="14dp"
+            android:src="@drawable/app_icon_login"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:fontFamily="@font/avnxt_bold"
+            android:textSize="36dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/american_typewriter"
             android:text="Atithi"
-            android:layout_marginTop="40dp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:gravity="center"/>
 
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/avnxt_demi"
-            android:gravity="center"
+            android:textSize="20dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/avnxt_bold"
             android:text="Welcome"
             android:id="@+id/welcome_text"
-            android:layout_marginTop="60dp"
-            android:layout_marginBottom="10dp"
-            android:textColor="#FFFFFF"
-            android:textSize="20dp" />
+            android:textColor="@color/white"
+            android:gravity="center"/>
+
 
 
     </LinearLayout>
@@ -75,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:text="Guest Checkin"
                 android:textSize="18dp"
-                android:fontFamily="@font/avnxt_medium"
+                android:fontFamily="@font/avnxt_demi"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/checkin_img"
                 android:layout_marginTop="10dp"
@@ -108,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:text="Frequent Visitors"
                 android:textSize="18dp"
-                android:fontFamily="@font/avnxt_medium"
+                android:fontFamily="@font/avnxt_demi"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/freq_img"
                 android:layout_marginTop="10dp"
@@ -139,7 +148,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/guest_checkout"
+            android:src="@drawable/checkout_img"
             android:id="@+id/checkout_img"
             android:layout_centerInParent="true"
             />
@@ -150,7 +159,7 @@
             android:text="Guest Checkout"
             android:textSize="18dp"
             android:layout_centerHorizontal="true"
-            android:fontFamily="@font/avnxt_medium"
+            android:fontFamily="@font/avnxt_demi"
             android:layout_below="@id/checkout_img"
             android:layout_marginTop="10dp"
             android:textColor="@color/gDark" />

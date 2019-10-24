@@ -2,10 +2,17 @@ package com.hello.khushboo.replonguesty.FrequentVisitors;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.NetworkRequest;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,7 +44,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.hello.khushboo.replonguesty.AddGuests.AddGuestActivity;
 import com.hello.khushboo.replonguesty.CheckoutGuests.GuestCheckoutViewActivity;
+import com.hello.khushboo.replonguesty.DefaultTextConfig;
 import com.hello.khushboo.replonguesty.GuestDataFirebase;
+import com.hello.khushboo.replonguesty.MainActivity;
 import com.hello.khushboo.replonguesty.R;
 
 import java.text.SimpleDateFormat;
@@ -84,9 +93,13 @@ public class FrequentVisitorsActivity extends AppCompatActivity {
     FirebaseUser firebaseUser;
 
 
+    boolean isConnected,monitoringConnectivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DefaultTextConfig defaultTextConfig = new DefaultTextConfig();
+        defaultTextConfig.adjustFontScale(getResources().getConfiguration(), FrequentVisitorsActivity.this);
         setContentView(R.layout.activity_frequent_visitors);
 
         user=getString(R.string.user);
@@ -184,167 +197,202 @@ public class FrequentVisitorsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         flat_nos = new ArrayList<>();
-                        Log.i(TAG,"CHECKIN CLICKED");
+                        Log.i(TAG, "CHECKIN CLICKED");
+                        if (!isConnected) {
+                            final Dialog dialog = new Dialog(FrequentVisitorsActivity.this);
+                            dialog.setContentView(R.layout.dialog_new);
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            Log.i(TAG, "NEW DIALOG");
 
-                        final AlertDialog.Builder builder =
-                                new AlertDialog.Builder(FrequentVisitorsActivity.this);
-                        builder.setTitle("Select Flat Nos.")
-                                .setMultiChoiceItems(flats, null,
-                                        new DialogInterface.OnMultiChoiceClickListener() {
-                                            public void onClick(DialogInterface dialog, int item, boolean isChecked) {
+                            Button btn_positive = dialog.findViewById(R.id.btn_positive);
+                            Button btn_negative = dialog.findViewById(R.id.btn_negative);
+                            TextView dialog_title = dialog.findViewById(R.id.dialog_title);
+                            TextView dialog_message = dialog.findViewById(R.id.dialog_message);
+                            ImageView dialog_icon = dialog.findViewById(R.id.dialog_img);
 
-                                                if (isChecked) {
-                                                    // if the user checked the item, add it to the selected items
-                                                    flat_nos.add(flats[item]);
+                            dialog_title.setText("Internet Unavailable");
+                            dialog_message.setText("Poor network connectivity detected! Please check your internet connection");
+                            //        btn_negative.setVisibility(View.GONE);
+                            //        btn_positive.setVisibility(View.GONE);
+
+                            btn_positive.setText("OK");
+                            btn_negative.setText("Go to Settings");
+                            btn_positive.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            btn_negative.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent myIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                                    startActivity(myIntent);
+                                }
+                            });
+                            dialog_icon.setImageResource(R.drawable.ic_no_internet);
+                            dialog.show();
+                        } else {
+
+
+                            final AlertDialog.Builder builder =
+                                    new AlertDialog.Builder(FrequentVisitorsActivity.this);
+                            builder.setTitle("Select Flat Nos.")
+                                    .setMultiChoiceItems(flats, null,
+                                            new DialogInterface.OnMultiChoiceClickListener() {
+                                                public void onClick(DialogInterface dialog, int item, boolean isChecked) {
+
+                                                    if (isChecked) {
+                                                        // if the user checked the item, add it to the selected items
+                                                        flat_nos.add(flats[item]);
+                                                    } else if (flat_nos.contains(flats[item])) {
+                                                        // else if the item is already in the array, remove it
+                                                        flat_nos.remove(String.valueOf(flats[item]));
+                                                    }
                                                 }
-
-                                                else if (flat_nos.contains(flats[item])) {
-                                                    // else if the item is already in the array, remove it
-                                                    flat_nos.remove(String.valueOf(flats[item]));
-                                                }
+                                            })
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            progressBar.setVisibility(View.VISIBLE);
+                                            String selectedIndex = "";
+                                            for (String i : flat_nos) {
+                                                selectedIndex += i + ", ";
                                             }
-                                        })
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        progressBar.setVisibility(View.VISIBLE);
-                                        String selectedIndex = "";
-                                        for(String i : flat_nos){
-                                            selectedIndex += i + ", ";
-                                        }
-                                        Log.i(TAG,"FLAT NOS SELECTED ARE: " + selectedIndex);
-                                        //addData();
-                                        holder.curr_checkin.setVisibility(View.VISIBLE);
-                                        holder.btn_checkin.setVisibility(View.GONE);
+                                            Log.i(TAG, "FLAT NOS SELECTED ARE: " + selectedIndex);
+                                            //addData();
+                                            holder.curr_checkin.setVisibility(View.VISIBLE);
+                                            holder.btn_checkin.setVisibility(View.GONE);
 
-                                        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                        final FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                                            final FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                            final FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-                                        final String guestData = getString(R.string.guestlist);
-                                        final String user = getString(R.string.user);
-                                        final String guest_name = getString(R.string.name);
-                                        final String guest_phone_number = getString(R.string.phone_number);
-                                        final String guest_purpose = getString(R.string.purpose);
-                                        final String guest_flat_no = getString(R.string.flat_no);
-                                        final String date_created = getString(R.string.date_created);
-                                        final String guest_user_id = getString(R.string.user_id);
-                                        final String document_id = getString(R.string.document_id);
-                                        final String document_ref=getString(R.string.document_ref);
-                                        final String vehicle_number_fb = getString(R.string.vehicle_number);
-                                        final String car_type_fb = getString(R.string.car_type);
-                                        final String profile_image_url = getString(R.string.profile_image_url);
-                                        final String frequent_visitor = getString(R.string.vehicle_image_url);
-                                        final String vehicle_image_url=getString(R.string.vehicle_image_url);
-                                        final String user_id = currentFirebaseUser.getUid();
+                                            final String guestData = getString(R.string.guestlist);
+                                            final String user = getString(R.string.user);
+                                            final String guest_name = getString(R.string.name);
+                                            final String guest_phone_number = getString(R.string.phone_number);
+                                            final String guest_purpose = getString(R.string.purpose);
+                                            final String guest_flat_no = getString(R.string.flat_no);
+                                            final String date_created = getString(R.string.date_created);
+                                            final String guest_user_id = getString(R.string.user_id);
+                                            final String document_id = getString(R.string.document_id);
+                                            final String document_ref = getString(R.string.document_ref);
+                                            final String vehicle_number_fb = getString(R.string.vehicle_number);
+                                            final String car_type_fb = getString(R.string.car_type);
+                                            final String profile_image_url = getString(R.string.profile_image_url);
+                                            final String frequent_visitor = getString(R.string.vehicle_image_url);
+                                            final String vehicle_image_url = getString(R.string.vehicle_image_url);
+                                            final String user_id = currentFirebaseUser.getUid();
 
 
-                                        guestArrayList = new ArrayList<GuestDataFirebase>();
+                                            guestArrayList = new ArrayList<GuestDataFirebase>();
 
 
+                                            final DocumentReference docRef = db.collection(user).document(user_id);
+                                            Log.i(TAG, "DOCUMENT REFERENCE IS " + docRef.toString());
 
-                                        final DocumentReference docRef = db.collection(user).document(user_id);
-                                        Log.i(TAG,"DOCUMENT REFERENCE IS "+docRef.toString());
+                                            getDataListener = docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onEvent(@javax.annotation.Nullable DocumentSnapshot snapshot,
+                                                                    @javax.annotation.Nullable FirebaseFirestoreException e) {
 
-                                        getDataListener=docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onEvent(@javax.annotation.Nullable DocumentSnapshot snapshot,
-                                                                @javax.annotation.Nullable FirebaseFirestoreException e) {
+                                                    if (e != null) {
+                                                        Log.w(TAG, "Listen failed.", e);
+                                                        return;
+                                                    }
+                                                    String source = snapshot != null && snapshot.getMetadata().hasPendingWrites()
+                                                            ? "Local" : "Server";
 
-                                                if (e != null) {
-                                                    Log.w(TAG, "Listen failed.", e);
-                                                    return;
-                                                }
-                                                String source = snapshot != null && snapshot.getMetadata().hasPendingWrites()
-                                                        ? "Local" : "Server";
-
-                                                Log.i(TAG,"Source is "+source);
-
-
-                                                if (snapshot != null && snapshot.exists()) {
-
-                                                    Log.d(TAG, source + " data is here ->data: " + snapshot.getData());
+                                                    Log.i(TAG, "Source is " + source);
 
 
-                                                    final DocumentReference soc_id_ref = (DocumentReference) snapshot.get("society_id");
+                                                    if (snapshot != null && snapshot.exists()) {
 
-                                                    Log.i(TAG, "Society id is " + soc_id_ref);
+                                                        Log.d(TAG, source + " data is here ->data: " + snapshot.getData());
+
+
+                                                        final DocumentReference soc_id_ref = (DocumentReference) snapshot.get("society_id");
+
+                                                        Log.i(TAG, "Society id is " + soc_id_ref);
 
 //
-                                                    if(guestDataFirebase.getProfile_image_url()==null){
-                                                        guestDataFirebase.setProfile_image_url("");
+                                                        if (guestDataFirebase.getProfile_image_url() == null) {
+                                                            guestDataFirebase.setProfile_image_url("");
+                                                        }
+
+                                                        final Map<String, Object> data = new HashMap<>();
+                                                        data.put(date_created, new Timestamp(new Date()));
+                                                        data.put(guest_name, guestDataFirebase.getName());
+                                                        data.put(guest_phone_number, guestDataFirebase.getPhone_no());
+                                                        data.put(guest_purpose, guestDataFirebase.getPurpose());
+                                                        data.put(guest_flat_no, flat_nos);
+                                                        data.put(guest_user_id, user_id);
+                                                        data.put(vehicle_number_fb, guestDataFirebase.getVehicle_no());
+                                                        data.put(car_type_fb, guestDataFirebase.getCar_type());
+                                                        data.put(profile_image_url, guestDataFirebase.getProfile_image_url());
+                                                        data.put(getString(R.string.checkout), FALSE);
+                                                        data.put(getString(R.string.checkout_time), null);
+                                                        data.put(getString(R.string.frequent_visitor), TRUE);
+                                                        data.put(vehicle_image_url, guestDataFirebase.getVehicle_image_url());
+
+                                                        DocumentReference document_id = soc_id_ref.collection(guestData).document();
+                                                        data.put(document_ref, document_id);
+
+                                                        document_id.set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+
+
+                                                                guestDataFirebase.getDocument_id().update(getString(R.string.frequent_visitor), FALSE)
+                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                            @Override
+                                                                            public void onSuccess(Void aVoid) {
+                                                                                Log.i(TAG, "Frequent visitor updated");
+                                                                                progressBar.setVisibility(View.GONE);
+                                                                                showMessage("Success", "Guest checked in", R.drawable.ic_success_dialog);
+
+                                                                            }
+                                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        progressBar.setVisibility(View.GONE);
+                                                                        showMessage("Unable to add guest", "An internal error occurred", R.drawable.ic_error_dialog);
+
+                                                                    }
+                                                                });
+
+
+                                                            }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                progressBar.setVisibility(View.GONE);
+                                                                showMessage("Unable to add guest", "An internal error occurred", R.drawable.ic_error_dialog);
+
+                                                            }
+                                                        });
+
+                                                    } else {
+                                                        Log.d(TAG, source + " data: null");
                                                     }
-
-                                                    final Map<String, Object> data = new HashMap<>();
-                                                    data.put(date_created, new Timestamp(new Date()));
-                                                    data.put(guest_name,guestDataFirebase.getName());
-                                                    data.put(guest_phone_number, guestDataFirebase.getPhone_no());
-                                                    data.put(guest_purpose, guestDataFirebase.getPurpose());
-                                                    data.put(guest_flat_no, flat_nos);
-                                                    data.put(guest_user_id, user_id);
-                                                    data.put(vehicle_number_fb, guestDataFirebase.getVehicle_no());
-                                                    data.put(car_type_fb, guestDataFirebase.getCar_type());
-                                                    data.put(profile_image_url, guestDataFirebase.getProfile_image_url());
-                                                    data.put(getString(R.string.checkout), FALSE);
-                                                    data.put(getString(R.string.checkout_time), null);
-                                                    data.put(getString(R.string.frequent_visitor),TRUE);
-                                                    data.put(vehicle_image_url,guestDataFirebase.getVehicle_image_url());
-
-                                                    DocumentReference document_id=soc_id_ref.collection(guestData).document();
-                                                    data.put(document_ref,document_id);
-
-                                                    document_id.set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-
-
-                                                            guestDataFirebase.getDocument_id().update(getString(R.string.frequent_visitor),FALSE)
-                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                        @Override
-                                                                        public void onSuccess(Void aVoid) {
-                                                                            Log.i(TAG,"Frequent visitor updated");
-                                                                            progressBar.setVisibility(View.GONE);
-                                                                            showMessage("Success","Guest checked in",R.drawable.ic_success_dialog);
-
-                                                                        }
-                                                                    }).addOnFailureListener(new OnFailureListener() {
-                                                                @Override
-                                                                public void onFailure(@NonNull Exception e) {
-                                                                    progressBar.setVisibility(View.GONE);
-                                                                    showMessage("Unable to add guest","An internal error occurred",R.drawable.ic_error_dialog);
-
-                                                                }
-                                                            });
-
-
-                                                        }
-                                                    }).addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            progressBar.setVisibility(View.GONE);
-                                                            showMessage("Unable to add guest","An internal error occurred",R.drawable.ic_error_dialog);
-
-                                                        }
-                                                    });
-
-                                                } else {
-                                                    Log.d(TAG, source + " data: null");
                                                 }
-                                            }
-                                        });
+                                            });
 
 
-                                    }
-                                })
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                        builder.show();
+                                        }
+                                    })
+                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            builder.show();
 
+                        }
                     }
                 });
+
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -592,5 +640,134 @@ public class FrequentVisitorsActivity extends AppCompatActivity {
         }
 
     }
+
+    private ConnectivityManager.NetworkCallback connectivityCallback = new ConnectivityManager.NetworkCallback() {
+        @Override
+        public void onAvailable(Network network) {
+            isConnected = true;
+            Log.i(TAG, "INTERNET CONNECTED");
+        }
+
+        @Override
+        public void onLost(Network network) {
+            isConnected = false;
+            Log.i(TAG,"Internet lost");
+            final Dialog dialog = new Dialog(FrequentVisitorsActivity.this);
+            dialog.setContentView(R.layout.dialog_new);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Log.i(TAG,"NEW DIALOG");
+
+            Button btn_positive = dialog.findViewById(R.id.btn_positive);
+            Button btn_negative = dialog.findViewById(R.id.btn_negative);
+            TextView dialog_title = dialog.findViewById(R.id.dialog_title);
+            TextView dialog_message = dialog.findViewById(R.id.dialog_message);
+            ImageView dialog_icon = dialog.findViewById(R.id.dialog_img);
+
+            dialog_title.setText("Internet Unavailable");
+            dialog_message.setText("Poor network connectivity detected! Please check your internet connection");
+            //        btn_negative.setVisibility(View.GONE);
+            //        btn_positive.setVisibility(View.GONE);
+
+            btn_positive.setText("OK");
+            btn_negative.setText("Go to Settings");
+            btn_positive.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            btn_negative.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent myIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                    startActivity(myIntent);
+                }
+            });
+            dialog_icon.setImageResource(R.drawable.ic_no_internet);
+            dialog.show();
+        }
+    };
+
+    // Method to check network connectivity in Main Activity
+    private void checkConnectivity() {
+        // here we are getting the connectivity service from connectivity manager
+        final ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(
+                Context.CONNECTIVITY_SERVICE);
+
+        // Getting network Info
+        // give Network Access Permission in Manifest
+        final NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+        // isConnected is a boolean variable
+        // here we check if network is connected or is getting connected
+        isConnected = activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+
+        if (!isConnected) {
+            // SHOW ANY ACTION YOU WANT TO SHOW
+            // WHEN WE ARE NOT CONNECTED TO INTERNET/NETWORK
+            Log.i(TAG, " NO NETWORK!");
+            // if Network is not connected we will register a network callback to  monitor network
+            connectivityManager.registerNetworkCallback(
+                    new NetworkRequest.Builder()
+                            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                            .build(), connectivityCallback);
+            monitoringConnectivity = true;
+
+            final Dialog dialog = new Dialog(FrequentVisitorsActivity.this);
+            dialog.setContentView(R.layout.dialog_new);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Log.i(TAG,"NEW DIALOG");
+
+            Button btn_positive = dialog.findViewById(R.id.btn_positive);
+            Button btn_negative = dialog.findViewById(R.id.btn_negative);
+            TextView dialog_title = dialog.findViewById(R.id.dialog_title);
+            TextView dialog_message = dialog.findViewById(R.id.dialog_message);
+            ImageView dialog_icon = dialog.findViewById(R.id.dialog_img);
+
+            dialog_title.setText("Internet Unavailable");
+            dialog_message.setText("Poor network connectivity detected! Please check your internet connection");
+            //        btn_negative.setVisibility(View.GONE);
+            //        btn_positive.setVisibility(View.GONE);
+
+            btn_positive.setText("OK");
+            btn_negative.setText("Go to Settings");
+            btn_positive.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            btn_negative.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent myIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                    startActivity(myIntent);
+                }
+            });
+            dialog_icon.setImageResource(R.drawable.ic_no_internet);
+            dialog.show();
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkConnectivity();
+
+    }
+
+    @Override
+    protected void onPause() {
+        // if network is being moniterd then we will unregister the network callback
+        if (monitoringConnectivity) {
+            final ConnectivityManager connectivityManager
+                    = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            connectivityManager.unregisterNetworkCallback(connectivityCallback);
+            monitoringConnectivity = false;
+        }
+        super.onPause();
+    }
+
 
 }

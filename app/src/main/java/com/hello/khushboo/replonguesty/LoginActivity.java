@@ -46,6 +46,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DefaultTextConfig defaultTextConfig = new DefaultTextConfig();
+        defaultTextConfig.adjustFontScale(getResources().getConfiguration(), LoginActivity.this);
         setContentView(R.layout.activity_login);
 
         FirebaseApp.initializeApp(this);

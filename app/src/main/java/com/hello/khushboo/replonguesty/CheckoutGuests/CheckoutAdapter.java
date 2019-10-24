@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -72,6 +73,7 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.Checko
         TextView guest_name,guest_purpose,guest_flatno,dateAndTime, dateAndTime_out;
         RelativeLayout row;
         Button btn_checkout;
+        ImageView checkout_tick;
 
 
         public CheckoutHolder(@NonNull View itemView) {
@@ -84,6 +86,7 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.Checko
             dateAndTime_out = itemView.findViewById(R.id.dateAndTime_out);
             row = (RelativeLayout)itemView.findViewById(R.id.row);
             btn_checkout=(Button)itemView.findViewById(R.id.btn_checkout);
+            checkout_tick=(ImageView)itemView.findViewById(R.id.checkout_tick);
 
 
         }

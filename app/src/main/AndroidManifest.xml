@@ -16,13 +16,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CheckoutGuests.GuestCheckoutViewActivity"></activity>
-        <activity android:name=".FrequentVisitors.FrequentVisitorsActivity" />
-        <activity android:name=".CheckoutGuests.GuestCheckoutActivity" />
-        <activity android:name=".AddGuests.AddVehicleActivity" />
-        <activity android:name=".AddGuests.AddGuestActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".CheckoutGuests.GuestCheckoutViewActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+        <activity android:name=".FrequentVisitors.FrequentVisitorsActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity android:name=".CheckoutGuests.GuestCheckoutActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity android:name=".AddGuests.AddVehicleActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity android:name=".AddGuests.AddGuestActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity android:name=".LoginActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity android:name=".MainActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
